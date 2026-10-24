@@ -1,6 +1,6 @@
 # Updating my portfolio
 
-I can update my site from a form in my own browser. ChatGPT isn’t needed, and I don’t need to log in to the editor.
+I can update my site from a form in my own browser and I don’t need to log in to the editor.
 
 ## 1. Open the project
 
