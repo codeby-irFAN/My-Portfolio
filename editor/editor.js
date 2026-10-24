@@ -24,12 +24,22 @@ const sections = {
   ],
   resume: ['Résumé', 'Generate a PDF from your content automatically, or upload your own PDF.'],
   appearance: ['Appearance', 'The default theme, logo, browser icon, and square cursor size.'],
+  easterEggs: [
+    'Easter eggs',
+    'Personalize the hidden terminal messages and developer note. Turn this off to disable all four secrets.',
+  ],
   site: [
     'Site & sharing',
     'Your domain, source repository, browser title, search description, and social preview text.',
   ],
 }
 const labels = {
+  enabled: 'Enable Easter eggs',
+  coffeeMessage: 'Coffee message',
+  hireMessage: 'Hiring reply',
+  noteTitle: 'Hidden note title',
+  noteMessage: 'Hidden note message',
+  noteFacts: 'Hidden note facts',
   heading: 'Opening heading',
   name: 'Name',
   handle: 'Handle',
@@ -151,6 +161,10 @@ const choices = {
   page: ['home', 'about', 'projects', 'skills', 'journey', 'contact', 'readme'],
 }
 const longFields = new Set([
+  'coffeeMessage',
+  'hireMessage',
+  'noteMessage',
+  'noteFacts',
   'bio',
   'intro',
   'lead',

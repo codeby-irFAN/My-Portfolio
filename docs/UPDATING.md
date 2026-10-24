@@ -70,6 +70,7 @@ npm run edit
 | Offline answers      | Topic keywords, answer text, and an optional destination page                                                 |
 | Résumé               | Automatic generation or an uploaded PDF                                                                       |
 | Appearance           | Default theme, logo, browser icon, cursor square size                                                         |
+| Easter eggs          | Enable or disable the secrets, coffee/hiring messages, hidden note title, message, and facts                  |
 | Site & sharing       | Domain, repository URL, browser title, search/social description                                              |
 
 Text fields are plain text. HTML and React code aren’t evaluated. Layout, animation behavior, new pages, and new functionality still live in the source code.
@@ -101,6 +102,20 @@ All content in the editor is public website content. I keep API keys and private
 Leaving the logo image empty keeps the permanent monochrome code logo. The built-in monochrome browser icon is `/favicon.svg?v=2`. I can upload replacements. The cursor’s inner square can be 3–16 pixels.
 
 The default theme is for new visitors. Someone who has already chosen a theme keeps their saved browser preference. Browser icon changes can take a refresh or a new tab because browsers cache icons.
+
+### Easter eggs
+
+The **Easter eggs** section controls my hidden messages and developer note. These fields support the same placeholders as my other text. Turning off **Enable Easter eggs** disables all four triggers.
+
+<details>
+<summary>How to find the secrets (spoilers)</summary>
+
+- Open the portfolio terminal and type `coffee` for a steaming ASCII cup.
+- Type `sudo hire irfan` for a playful reply and my actual contact options. The name follows the Profile section, so changing my name also changes this command. It doesn't run a system command or send an enquiry.
+- Click or tap the header logo **five times within four seconds** to open the hidden note. Keyboard users can focus the logo and press Enter five times. A normal click still goes home.
+- Type `matrix` for ten seconds of falling code. Press Escape, click **Exit matrix**, or type `matrix` again to stop it. With reduced motion enabled, it displays still code. Switching away from the browser tab also stops the effect.
+
+</details>
 
 ## 5. Save and preview
 

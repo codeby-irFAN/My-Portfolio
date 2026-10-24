@@ -33,6 +33,7 @@ import Pages from './components/Pages'
 import { Cursor, Dialog } from './components/UI'
 import Terminal from './components/Terminal'
 import Guide from './components/Guide'
+import { Matrix, SecretNote } from './components/EasterEggs'
 import {
   files,
   profile,
@@ -40,6 +41,7 @@ import {
   themes,
   site,
   appearance,
+  easterEggs,
   type PageId,
   type Project,
 } from './data'
@@ -71,10 +73,14 @@ export default function App() {
     return themes.some((x) => x.id === t) ? t : appearance.defaultTheme
   })
   const [cursor, setCursor] = useState(() => stored('irfan-cursor', 'true') === 'true')
-  const [modal, setModal] = useState<'palette' | 'themes' | 'settings' | 'source' | 'help' | null>(
-    null,
-  )
+  const [modal, setModal] = useState<
+    'palette' | 'themes' | 'settings' | 'source' | 'help' | 'secret' | null
+  >(null)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [matrix, setMatrix] = useState(false)
+  const toggleMatrix = useCallback(() => setMatrix((active) => !active), [])
+  const stopMatrix = useCallback(() => setMatrix(false), [])
+  const logoClicks = useRef({ count: 0, started: 0 })
   const [query, setQuery] = useState('')
   const [commandIndex, setCommandIndex] = useState(0)
   const [toast, setToast] = useState('')
@@ -109,6 +115,22 @@ export default function App() {
   function toggleGuide() {
     setGuide((open) => !open)
     if (matchMedia(MOBILE_LAYOUT).matches) setSidebar(false)
+  }
+  function clickLogo() {
+    navigate('home')
+    if (!easterEggs.enabled) return
+    const now = performance.now()
+    const sequence = logoClicks.current
+    if (!sequence.count || now - sequence.started > 4000) {
+      sequence.count = 0
+      sequence.started = now
+    }
+    sequence.count += 1
+    if (sequence.count === 5) {
+      sequence.count = 0
+      setGuide(false)
+      setModal('secret')
+    }
   }
   useEffect(() => {
     const viewport = window.visualViewport
@@ -361,7 +383,7 @@ export default function App() {
         Skip to content
       </a>
       <header className="titlebar">
-        <button className="brand-button" aria-label="Go home" onClick={() => navigate('home')}>
+        <button className="brand-button" aria-label="Go home" onClick={clickLogo}>
           {appearance.logo ? <img src={appearance.logo} alt="" /> : <Code2 size={22} />}
         </button>
         <div className="desktop-menus">
@@ -668,6 +690,8 @@ export default function App() {
             onClose={() => setTerminal(false)}
             expanded={terminalExpanded}
             setExpanded={setTerminalExpanded}
+            matrixActive={matrix}
+            toggleMatrix={toggleMatrix}
           />
         </div>
         {guide && <Guide navigate={navigate} close={() => setGuide(false)} />}
@@ -864,6 +888,8 @@ export default function App() {
           </div>
         </Dialog>
       )}
+      {modal === 'secret' && <SecretNote onClose={() => setModal(null)} />}
+      {matrix && <Matrix reduced={reduced} onClose={stopMatrix} />}
       {selectedProject && (
         <Dialog
           title={selectedProject.name}

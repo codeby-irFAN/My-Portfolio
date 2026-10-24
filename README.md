@@ -12,6 +12,7 @@ This is my personal portfolio. I wanted it to feel like a developer's workspace,
 - Six color themes, including a light theme, with preferences saved in the browser.
 - A fixed monochrome logo and browser icon across all themes.
 - A command palette and an interactive portfolio terminal.
+- Hidden terminal surprises and a developer note for curious visitors.
 - An expandable chat panel with an optional Groq-powered assistant.
 - A local browser editor for my content, projects, appearance, and AI personality.
 - A contact form that prepares an email draft, plus a downloadable profile PDF.

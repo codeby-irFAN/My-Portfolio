@@ -4773,3 +4773,204 @@ kbd {
 .hero-description {
   overflow-wrap: anywhere;
 }
+
+/* Hidden details: they appear only after a visitor discovers a trigger. */
+.terminal-easter-egg {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+  margin: 8px 0;
+  max-width: 570px;
+  white-space: normal;
+  color: var(--text);
+}
+.terminal-easter-egg p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.coffee-egg {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.coffee-cup {
+  flex-shrink: 0;
+  white-space: pre;
+  font: 11px/1.2 var(--mono);
+  color: var(--accent);
+}
+.coffee-steam {
+  display: inline-block;
+  animation: coffee-steam 2.8s ease-in-out 3;
+}
+.egg-contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 8px;
+}
+.egg-contact-links a,
+.egg-contact-links button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+.secret-note-dialog {
+  width: min(520px, calc(100vw - 32px));
+}
+.secret-note-dialog .dialog-heading {
+  height: auto;
+  min-height: 58px;
+  padding-block: 14px;
+  gap: 12px;
+}
+.secret-note-dialog .dialog-heading > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.secret-note-dialog .dialog-heading > button {
+  flex-shrink: 0;
+}
+.secret-note {
+  padding: 26px;
+  font-size: 13px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.secret-note > .eyebrow {
+  margin-bottom: 20px;
+}
+.secret-note > p:not(.eyebrow):not(.secret-signature) {
+  color: var(--muted);
+}
+.secret-note ul {
+  margin: 22px 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+.secret-note li + li {
+  margin-top: 9px;
+}
+.secret-signature {
+  font-family: var(--display);
+  font-size: 20px;
+  margin-bottom: 24px;
+}
+.matrix-overlay {
+  position: fixed;
+  inset: 0 0 auto;
+  height: var(--app-height, 100dvh);
+  z-index: 60;
+  pointer-events: none;
+}
+.matrix-rain {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(transparent, #000 12%, #000 84%, transparent);
+}
+.matrix-column {
+  position: absolute;
+  top: 0;
+  left: calc(var(--column) * 100% / 18);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  white-space: nowrap;
+  color: #55d986;
+  opacity: 0.18;
+  font: 14px/1.6 var(--mono);
+  letter-spacing: 5px;
+  animation: matrix-fall var(--fall-time) linear infinite;
+  animation-delay: var(--fall-delay);
+}
+.matrix-controls {
+  position: absolute;
+  right: max(12px, env(safe-area-inset-right));
+  bottom: calc(34px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 6px 4px 14px;
+  max-width: calc(100% - 24px);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font: 9px/1.5 var(--mono);
+  pointer-events: auto;
+}
+.matrix-controls > span {
+  min-width: 0;
+}
+.matrix-controls button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 4px;
+  background: var(--surface);
+  flex-shrink: 0;
+}
+.matrix-controls button:hover {
+  color: var(--accent);
+}
+.matrix-overlay.is-still .matrix-column {
+  animation: none;
+  transform: translateY(calc(var(--column) * -18px));
+  opacity: 0.1;
+}
+@keyframes coffee-steam {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes matrix-fall {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(100dvh);
+  }
+}
+@media (max-width: 760px) {
+  .matrix-column {
+    left: calc(var(--column) * 100% / 9);
+  }
+  .matrix-column:nth-child(n + 10) {
+    display: none;
+  }
+  .secret-note {
+    padding: 22px;
+    font-size: 12px;
+  }
+  .egg-contact-links a,
+  .egg-contact-links button {
+    min-height: 44px;
+  }
+  .coffee-egg {
+    gap: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coffee-steam,
+  .matrix-column {
+    animation: none !important;
+  }
+  .matrix-column {
+    transform: translateY(calc(var(--column) * -18px));
+    opacity: 0.1;
+  }
+}

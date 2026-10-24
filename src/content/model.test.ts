@@ -32,6 +32,8 @@ test('one change to profile facts updates pages, metadata, guide, and AI prefere
   assert.match(data.assistant.welcome, /Sam/)
   assert.match(data.assistant.personality, /Sam/)
   assert.match(data.journey.projectText, /New App/)
+  assert.match(data.easterEggs.noteMessage, /Sam/)
+  assert.ok(data.easterEggs.noteFacts.some((fact) => fact.includes('New App')))
   assert.match(matchAnswer('What is Sam studying?', data.guideAnswers)!.text, /third-year/)
   assert.match(matchAnswer('Any availability?', data.guideAnswers)!.text, /Sam is open/)
   assert.match(matchAnswer('Tell me about New App', data.guideAnswers)!.text, /New App/)
@@ -66,6 +68,12 @@ test('invalid IDs, links, file paths, settings, and placeholders fail before sav
     },
     (c: typeof content) => {
       c.profile.bio = '{unknownFact}'
+    },
+    (c: typeof content) => {
+      c.easterEggs.noteMessage = '{unknownFact}'
+    },
+    (c: typeof content) => {
+      c.easterEggs.noteFacts = [42] as never
     },
   ]) {
     const next = structuredClone(content)

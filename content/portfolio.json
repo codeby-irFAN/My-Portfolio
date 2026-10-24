@@ -224,5 +224,17 @@
     "footer": {
       "signature": "BUILT WITH CURIOSITY"
     }
+  },
+  "easterEggs": {
+    "enabled": true,
+    "coffeeMessage": "Turning caffeine into questionable variable names.",
+    "hireMessage": "Permission granted. Let’s build something useful.",
+    "noteTitle": "You found my hidden README.",
+    "noteMessage": "Hey, I’m {firstName}. Thanks for looking a little closer.\n\nI’m still learning, trying things, and figuring out how to make the next thing better. This little workspace is part of that process. If something here made you curious, I’d love to hear about it.",
+    "noteFacts": [
+      "Currently studying {subject} at {institutionShort}, {universityShort}.",
+      "Building {projectNames}.",
+      "Still a work in progress. Just like this portfolio."
+    ]
   }
 }

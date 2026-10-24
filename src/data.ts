@@ -17,6 +17,7 @@ export const {
   resume,
   assistant,
   appearance,
+  easterEggs,
 } = createPortfolio(content)
 export const findGuideAnswer = (text: string) => matchAnswer(text, guideAnswers)
 export type Project = (typeof projects)[number]

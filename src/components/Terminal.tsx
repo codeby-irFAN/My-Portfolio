@@ -1,20 +1,25 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { ChevronDown, ChevronUp, X } from 'lucide-react'
-import { files, profile, projects, skillGroups, type PageId } from '../data'
+import { files, profile, projects, skillGroups, easterEggs, type PageId } from '../data'
+import { Coffee, Hire } from './EasterEggs'
 
-type Line = { text: string; kind: 'output' | 'command' | 'error' }
+type Line = { text: string; kind: 'output' | 'command' | 'error'; egg?: 'coffee' | 'hire' }
 export default function Terminal({
   visible,
   navigate,
   onClose,
   expanded,
   setExpanded,
+  matrixActive,
+  toggleMatrix,
 }: {
   visible: boolean
   navigate: (p: PageId) => void
   onClose: () => void
   expanded: boolean
   setExpanded: (v: boolean) => void
+  matrixActive: boolean
+  toggleMatrix: () => void
 }) {
   const [lines, setLines] = useState<Line[]>([
     {
@@ -42,7 +47,37 @@ export default function Terminal({
     const arg = rest.join(' ')
     let output = '',
       error = false
-    switch (command.toLowerCase()) {
+    let egg: Line['egg']
+    const name = command.toLowerCase()
+    switch (!easterEggs.enabled && ['coffee', 'sudo', 'matrix'].includes(name) ? '' : name) {
+      case 'coffee':
+        output = easterEggs.coffeeMessage
+        egg = 'coffee'
+        setExpanded(true)
+        break
+      case 'sudo': {
+        const target = rest.slice(1).join(' ').toLowerCase()
+        if (
+          rest[0]?.toLowerCase() === 'hire' &&
+          [profile.firstName, profile.name, profile.handle].some(
+            (value) => value.toLowerCase() === target,
+          )
+        ) {
+          output = easterEggs.hireMessage
+          egg = 'hire'
+          setExpanded(true)
+        } else {
+          output = `Try sudo hire ${profile.firstName.toLowerCase()}. This terminal cannot run system commands.`
+          error = true
+        }
+        break
+      }
+      case 'matrix':
+        output = matrixActive
+          ? 'Back to the real world.'
+          : 'Follow the code. Matrix mode lasts 10 seconds. Press Escape or Exit matrix to stop; run matrix again to toggle it off.'
+        toggleMatrix()
+        break
       case 'help':
         output =
           'Explore: ls · pwd · cd src · cd .. · cat <file> · open <file>\nDiscover: whoami · projects · skills · contact · github\nOther: echo <text> · date · history · clear\nTip: ↑ / ↓ recall commands. Tab completes file names. This is a portfolio terminal, not a system shell.'
@@ -119,7 +154,7 @@ export default function Terminal({
         ...l,
         { text: `${profile.handle} ${cwd} $ ${raw}`, kind: 'command' as const },
         ...(output
-          ? [{ text: output, kind: error ? ('error' as const) : ('output' as const) }]
+          ? [{ text: output, kind: error ? ('error' as const) : ('output' as const), egg }]
           : []),
       ].slice(-160),
     )
@@ -158,7 +193,19 @@ export default function Terminal({
           <div role="log" aria-label="Terminal output">
             {lines.map((l, i) => (
               <div key={i} className={'terminal-line ' + l.kind}>
-                {l.text}
+                {l.egg === 'coffee' ? (
+                  <Coffee message={l.text} />
+                ) : l.egg === 'hire' ? (
+                  <Hire
+                    message={l.text}
+                    onContact={() => {
+                      navigate('contact')
+                      onClose()
+                    }}
+                  />
+                ) : (
+                  l.text
+                )}
               </div>
             ))}
           </div>

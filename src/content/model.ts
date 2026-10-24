@@ -87,6 +87,14 @@ export type PortfolioContent = {
     suggestions: { label: string; question: string }[]
   }
   appearance: { defaultTheme: string; logo: string; favicon: string; cursorSize: number }
+  easterEggs: {
+    enabled: boolean
+    coffeeMessage: string
+    hireMessage: string
+    noteTitle: string
+    noteMessage: string
+    noteFacts: string[]
+  }
 }
 
 type RecordValue = Record<string, unknown>
@@ -279,6 +287,11 @@ export function validateContent(value: unknown): asserts value is PortfolioConte
     text(entry.label, `assistant.suggestions[${i}].label`)
     text(entry.question, `assistant.suggestions[${i}].question`)
   })
+  const eggs = object(root.easterEggs, 'easterEggs')
+  if (typeof eggs.enabled !== 'boolean') errors.push('easterEggs.enabled must be true or false')
+  for (const field of ['coffeeMessage', 'hireMessage', 'noteTitle', 'noteMessage'])
+    text(eggs[field], `easterEggs.${field}`)
+  strings(eggs.noteFacts, 'easterEggs.noteFacts')
   const appearance = object(root.appearance, 'appearance')
   if (
     !['fern', 'tokyo', 'rose', 'nord', 'amber', 'paper'].includes(String(appearance.defaultTheme))
@@ -458,6 +471,14 @@ export function createPortfolio(value: unknown) {
       })),
     },
     appearance: content.appearance,
+    easterEggs: {
+      ...content.easterEggs,
+      coffeeMessage: format(content.easterEggs.coffeeMessage),
+      hireMessage: format(content.easterEggs.hireMessage),
+      noteTitle: format(content.easterEggs.noteTitle),
+      noteMessage: format(content.easterEggs.noteMessage),
+      noteFacts: content.easterEggs.noteFacts.map(format),
+    },
   }
 }
 

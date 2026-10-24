@@ -24,6 +24,10 @@ test('owner edits profile and AI personality, adds a project, saves, and reopens
       .getByLabel('Instructions', { exact: true })
       .fill('Explain my work in simple terms. Ask a helpful follow-up question.')
     await page.getByLabel('Maximum reply words').fill('120')
+    await page.getByRole('button', { name: 'Easter eggs', exact: true }).click()
+    await page
+      .getByLabel('Hidden note message', { exact: true })
+      .fill('A small secret from {firstName}.')
     await page.getByRole('button', { name: 'Projects', exact: true }).click()
     await page.locator('#fields > div > button.add').click()
     const project = page.locator('#fields > div > section').last()
@@ -38,6 +42,7 @@ test('owner edits profile and AI personality, adds a project, saves, and reopens
     expect(saved.profile.name).toBe('Sam Example')
     expect(saved.assistant.personality).toBe('Warm, witty, and concise.')
     expect(saved.assistant.maxWords).toBe(120)
+    expect(saved.easterEggs.noteMessage).toBe('A small secret from {firstName}.')
     expect(saved.projects.at(-1).name).toBe('New Project')
     expect(readFileSync(join(root, 'public/profile.html'), 'utf8')).toContain('Sam Example')
     for (const width of [1440, 320]) {
