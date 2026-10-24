@@ -1,6 +1,13 @@
 import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
+// Browser tests never spend provider quota or require a real API key.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/api/chat', (route) =>
+    route.fulfill({ status: 503, json: { error: 'not_configured' } }),
+  )
+})
+
 test('editor navigation, file closing, browser history, and profile content', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', (e) => errors.push(e.message))
@@ -332,4 +339,57 @@ test('email form validates input, prepares an encoded draft, and copies without 
   expect(
     accessibility.violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target) })),
   ).toEqual([])
+})
+
+test('Groq replies are labeled, preserve follow-up context, and link only to approved sources', async ({
+  page,
+}) => {
+  const requests: { messages: { role: string; content: string }[] }[] = []
+  await page.route('**/api/chat', async (route) => {
+    requests.push(route.request().postDataJSON())
+    await route.fulfill({
+      json: {
+        answer:
+          requests.length === 1
+            ? 'Team Board uses React, Supabase, and PostgreSQL.'
+            : 'Supabase provides persistent storage and real-time updates.',
+        sources: [
+          { label: 'Team Board README', url: 'https://github.com/codeby-irFAN/Team_Board#readme' },
+          { label: 'Unverified link', url: 'https://untrusted.example' },
+        ],
+      },
+    })
+  })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Open portfolio guide', exact: true }).click()
+  const guide = page.getByRole('complementary', { name: 'Portfolio guide' })
+  await guide.getByRole('button', { name: 'What has he built?' }).click()
+  await expect(guide.locator('.guide-message').last()).toContainText('GROQ AI')
+  await expect(guide.getByRole('link', { name: 'Team Board README' })).toHaveAttribute(
+    'href',
+    'https://github.com/codeby-irFAN/Team_Board#readme',
+  )
+  await expect(guide.getByRole('link', { name: 'Unverified link' })).toHaveCount(0)
+  await guide.getByRole('textbox', { name: 'Ask portfolio guide' }).fill('What does Supabase do?')
+  await guide.getByRole('button', { name: 'Send question' }).click()
+  await expect(guide.locator('.guide-message').last()).toContainText('real-time updates')
+  expect(requests[1].messages).toEqual([
+    { role: 'user', content: 'What has he built?' },
+    { role: 'assistant', content: 'Team Board uses React, Supabase, and PostgreSQL.' },
+    { role: 'user', content: 'What does Supabase do?' },
+  ])
+})
+
+test('AI failure falls back to a labeled local answer and unlocks the form', async ({ page }) => {
+  await page.route('**/api/chat', (route) =>
+    route.fulfill({ status: 429, json: { error: 'provider_unavailable' } }),
+  )
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Open portfolio guide', exact: true }).click()
+  const guide = page.getByRole('complementary', { name: 'Portfolio guide' })
+  await guide.getByRole('button', { name: 'What is he studying?' }).click()
+  await expect(guide.getByRole('log')).toContainText('GGSIPU')
+  await expect(guide.locator('.guide-message').last()).toContainText('LOCAL GUIDE')
+  await expect(guide.getByRole('status')).toContainText('AI unavailable')
+  await expect(guide.getByRole('button', { name: 'What has he built?' })).toBeEnabled()
 })

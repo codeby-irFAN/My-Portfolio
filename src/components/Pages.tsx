@@ -608,7 +608,8 @@ export default function Pages({
         <h2>## The fine print</h2>
         <p>
           Personal details and project descriptions come from my public GitHub profile and project
-          documentation. The portfolio guide uses local, curated answers. The terminal is an
+          documentation. The portfolio guide uses Groq AI when connected, with local answers as a
+          fallback. AI questions are sent to Groq; answers can be mistaken. The terminal is an
           interactive portfolio simulation; it does not run system commands.
         </p>
         <p>

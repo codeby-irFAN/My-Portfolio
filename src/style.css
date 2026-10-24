@@ -4275,3 +4275,44 @@ kbd {
     font-size: 11px;
   }
 }
+
+.guide-message p {
+  white-space: pre-wrap;
+}
+.guide-state {
+  padding: 0 17px 12px;
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.guide-thinking {
+  padding: 5px 10px;
+  font-size: 10px;
+  color: var(--accent);
+}
+.guide-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.guide-sources a {
+  font-size: 8px;
+  color: var(--accent);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 5px 6px;
+}
+.guide-sources a:hover {
+  background: var(--panel);
+}
+@media (max-width: 760px) {
+  .guide-state {
+    font-size: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .guide-sources a {
+    font-size: 10px;
+  }
+}
