@@ -27,12 +27,13 @@ Browser tests use the installed Chromium at `/usr/bin/chromium` when available. 
 - File explorer, closable tabs, arrow-key tab navigation, URL hashes, and browser history.
 - Home, about, projects, skills, learning journey, contact, and README views.
 - Smooth wheel scrolling, animated page transitions, typewriter roles, floating geometric artwork, and hover states.
-- Square cursor with an 8px center dot and synchronized tracking, plus interactive hover response; can be disabled in settings.
+- Square cursor with an 8px center dot and synchronized tracking, theme-matched colors and interactive hover response; can be disabled in settings.
 - Six persisted color themes, including a light theme.
 - Searchable command palette with keyboard navigation (`Ctrl/Command + K` or `/`).
 - Interactive portfolio terminal with commands, history, file completion, and simulated directory navigation (`Ctrl/Command + backtick`).
 - Project filters, project details, and links to actual source repositories and live projects.
 - Local portfolio guide with curated answers about Irfan. It is not a generative AI service and does not send questions to a server.
+- Contact form that prepares an email draft in the visitor’s mail app, with message copying as a fallback. It does not send email automatically.
 - Downloadable student profile PDF and accessible, keyboard-operated dialogs.
 - Mobile explorer and touch layouts, plus reduced-motion support.
 - Locally bundled fonts and icons; no runtime third-party scripts or analytics.
@@ -41,7 +42,7 @@ The terminal is a portfolio simulation, not a system shell. Project cards use or
 
 ## Personalize
 
-Edit `src/data.ts` for the profile, project descriptions, links, skills, themes, and guide answers. No email address was public on the profile, so contact uses verified GitHub and LinkedIn links.
+Edit `src/data.ts` for the profile, project descriptions, links, skills, themes, and guide answers. The contact address is published with Irfan’s approval. The form opens the visitor’s email app with an encoded draft; messages are not stored or delivered by this website. Automatic delivery would need a configured form provider or backend email service.
 
 After changing profile details, regenerate the PDF and its printable HTML source:
 

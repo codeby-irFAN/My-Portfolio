@@ -7,7 +7,7 @@ export const profile = {
   role: 'Developer & AI explorer',
   github: 'https://github.com/codeby-irFAN',
   linkedin: 'https://www.linkedin.com/in/irfan-ahmad-55597a444',
-  email: '',
+  email: 'irfanahmad25136@gmail.com',
   bio: "I'm a first-year B.Tech student studying Artificial Intelligence & Machine Learning at USAR, GGSIPU, Delhi. I enjoy building for the web and exploring how software and AI can solve practical problems.",
   tagline: 'Learning with curiosity. Building with purpose.',
   education: 'University School of Automation & Robotics · GGSIPU',
@@ -105,7 +105,7 @@ export const guideAnswers = [
   },
   {
     terms: ['contact', 'email', 'connect', 'hire', 'linkedin'],
-    text: 'You can connect with Irfan on LinkedIn or GitHub. An email address has not been published. Open contact.css for his verified links.',
+    text: 'You can email Irfan at irfanahmad25136@gmail.com or connect on LinkedIn and GitHub. Open contact.css to prepare an email draft or find his verified profiles.',
     page: 'contact' as PageId,
   },
   {

@@ -227,8 +227,109 @@ test('menus, scrolling, command actions, downloads, and contact copy work', asyn
   await page.keyboard.press('Escape')
   await page.locator('.file-row').filter({ hasText: 'contact.css' }).click()
   await page.getByRole('button', { name: 'Copy profile link' }).click()
-  await expect(page.getByRole('status')).toContainText('GitHub profile link copied.')
+  await expect(page.locator('.toast')).toContainText('GitHub profile link copied.')
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
     'https://github.com/codeby-irFAN',
   )
+})
+
+test('cursor uses the selected theme color in every theme', async ({ page }) => {
+  await page.goto('/')
+  for (const theme of [
+    'Fern Dark',
+    'Tokyo Night',
+    'Rosé Pine',
+    'Nord',
+    'Warm Amber',
+    'Paper Light',
+  ]) {
+    await page.getByRole('button', { name: 'Choose color theme' }).click()
+    await page.getByRole('button', { name: theme, exact: true }).click()
+    const colors = await page.evaluate(() => {
+      const sample = document.createElement('span')
+      sample.style.color = 'var(--accent)'
+      document.body.append(sample)
+      const expected = getComputedStyle(sample).color
+      sample.remove()
+      const ring = document.querySelector('.square-cursor')!
+      const dot = document.querySelector('.cursor-dot')!
+      return {
+        expected,
+        ring: getComputedStyle(ring, '::before').borderTopColor,
+        dot: getComputedStyle(dot, '::before').backgroundColor,
+        blend: getComputedStyle(dot).mixBlendMode,
+      }
+    })
+    expect(colors.ring, theme).toBe(colors.expected)
+    expect(colors.dot, theme).toBe(colors.expected)
+    expect(colors.blend).toBe('normal')
+  }
+})
+
+test('email form validates input, prepares an encoded draft, and copies without claiming delivery', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.goto('/#contact')
+  await page.evaluate(() => {
+    document.addEventListener(
+      'click',
+      (event) => {
+        const link = event.target instanceof Element ? event.target.closest('a') : null
+        if (link instanceof HTMLAnchorElement && link.protocol === 'mailto:') {
+          event.preventDefault()
+          ;(window as Window & { preparedMailto?: string }).preparedMailto = link.href
+        }
+      },
+      true,
+    )
+  })
+  const form = page.getByRole('form', { name: 'Email Irfan' })
+  await form.getByRole('button', { name: 'Open email draft' }).click()
+  expect(
+    await form
+      .locator('input[name="name"]')
+      .evaluate((el) => (el as HTMLInputElement).validity.valueMissing),
+  ).toBe(true)
+  await form.getByLabel('Your name').fill('Visitor & Friend')
+  await form.getByLabel('Your email').fill('not-an-email')
+  await form.getByLabel('Your message').fill('Can we build something together? & #hello + 100%')
+  await form.getByRole('button', { name: 'Open email draft' }).click()
+  expect(
+    await form
+      .locator('input[name="email"]')
+      .evaluate((el) => (el as HTMLInputElement).validity.typeMismatch),
+  ).toBe(true)
+  expect(
+    await page.evaluate(() => (window as Window & { preparedMailto?: string }).preparedMailto),
+  ).toBeUndefined()
+  await form.getByLabel('Your email').fill('visitor@example.com')
+  await form.getByLabel('Subject').fill('Hello Irfan & a project idea?')
+  await form.getByRole('button', { name: 'Open email draft' }).click()
+  const draft = await page.evaluate(
+    () => (window as Window & { preparedMailto?: string }).preparedMailto!,
+  )
+  const parsed = new URL(draft)
+  expect(parsed.pathname).toBe('irfanahmad25136@gmail.com')
+  expect(parsed.searchParams.get('subject')).toBe('Hello Irfan & a project idea?')
+  expect(parsed.searchParams.get('body')).toContain(
+    'Can we build something together? & #hello + 100%',
+  )
+  expect(parsed.searchParams.get('body')).toContain('Reply to: visitor@example.com')
+  await expect(form.getByRole('status')).toContainText('Complete sending in your email app')
+  await form.getByRole('button', { name: 'Copy message' }).click()
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+    parsed.searchParams.get('body'),
+  )
+  await expect(form.getByRole('status')).toContainText('Message copied.')
+  await page.getByRole('button', { name: 'Choose color theme' }).click()
+  await page.getByRole('button', { name: 'Paper Light', exact: true }).click()
+  const accessibility = await new AxeBuilder({ page })
+    .include('.email-section')
+    .withTags(['wcag2a', 'wcag2aa'])
+    .analyze()
+  expect(
+    accessibility.violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target) })),
+  ).toEqual([])
 })

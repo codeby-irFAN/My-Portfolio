@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { profile, projects, skillGroups, type PageId, type Project } from '../data'
 import { HeroArt, Typewriter } from './UI'
+import ContactForm from './ContactForm'
 
 export function ProjectVisual({ project }: { project: Project }) {
   return project.id === 'tracerisk' ? (
@@ -544,6 +545,7 @@ export default function Pages({
             <p>@codeby-irFAN</p>
           </a>
         </div>
+        {profile.email && <ContactForm recipient={profile.email} />}
         <div className="contact-bottom">
           <div>
             <MapPin size={16} />
