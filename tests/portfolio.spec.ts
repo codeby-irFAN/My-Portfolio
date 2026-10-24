@@ -196,7 +196,7 @@ test('cursor dot and square stay centered on the pointer without trailing', asyn
       top: style.top,
     }
   })
-  expect(dot).toEqual({ width: '8px', height: '8px', radius: '50%', left: '-4px', top: '-4px' })
+  expect(dot).toEqual({ width: '8px', height: '8px', radius: '0px', left: '-4px', top: '-4px' })
   await page.getByRole('button', { name: 'Explore my work', exact: true }).hover()
   await expect(page.locator('.square-cursor')).toHaveClass(/is-hovering/)
   await page.evaluate(() => window.dispatchEvent(new Event('blur')))

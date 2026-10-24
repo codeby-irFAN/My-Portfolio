@@ -2649,7 +2649,7 @@ kbd {
   top: -4px;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 0;
   background: #d3fca9;
 }
 .custom-cursor,
