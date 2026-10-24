@@ -1,96 +1,136 @@
-# Irfan Ahmad — Interactive Portfolio
+# My Portfolio
 
-A personal developer portfolio inspired by a code editor, built independently with React, TypeScript, Vite, and Lenis. Personal details come from [Irfan's public GitHub profile](https://github.com/codeby-irFAN), including education at USAR, GGSIPU and the TraceRisk and Team Board projects.
+Hi, I'm **Irfan Ahmad**, a B.Tech student in Artificial Intelligence & Machine Learning at USAR, GGSIPU, Delhi. I'm exploring web development, AI, and open source, and learning by building projects I can actually use.
+
+This is my personal portfolio. I wanted it to feel like a developer's workspace, so the pages open as files in an editor. It brings together my projects, the things I'm learning, and ways to get in touch.
+
+## What's inside
+
+- An editor layout with a file explorer, closable tabs, and keyboard navigation.
+- Pages for my background, projects, skills, learning journey, and contact details.
+- A square cursor that follows the selected theme, smooth scrolling, and animated transitions.
+- Six color themes, including a light theme, with preferences saved in the browser.
+- A command palette and an interactive portfolio terminal.
+- An expandable chat panel with an optional Groq-powered assistant.
+- A contact form that prepares an email draft, plus a downloadable profile PDF.
+- Responsive layouts and support for reduced motion.
+
+The terminal is a way to explore the portfolio; it doesn't run commands on a computer. The project cards use illustrated previews, with links to the actual apps and source code.
+
+## Featured projects
+
+**[TraceRisk](https://github.com/codeby-irFAN/TraceRisk)** — A travel workspace for trips in India, bringing together routes, weather, travel updates, and source-linked insights. [Live project](https://tracerisk.onrender.com/).
+
+**[Team Board](https://github.com/codeby-irFAN/Team_Board)** — A collaborative task board for student teams, built with React and Supabase. It supports real-time updates, drag-and-drop tasks, and checks for simultaneous edits. [Live project](https://team-board-ashen.vercel.app).
+
+## Stack
+
+React, TypeScript, Vite, and Lenis on the frontend. The AI guide uses a Node.js endpoint and the Groq API. Fonts are hosted locally through Fontsource, and the icons are from Lucide.
 
 ## Run locally
 
-Use Node.js 24 or newer.
+You'll need **Node.js 24 or newer** and Git.
 
-```sh
+```bash
+git clone https://github.com/codeby-irFAN/My-Portfolio.git
+cd My-Portfolio
 npm ci
 npm run dev
 ```
 
-The development server uses port 5173. The portfolio works without credentials using local guide answers. Groq AI is optional and requires a server-side API key; no database or external font request is needed.
+Open the address printed in the terminal. The default port is `5173`.
 
-```sh
-npm run build        # TypeScript checks and production output in dist/
-npm run preview      # Serve the production build
-npm test             # Chromium browser tests (mocked AI requests)
-npm run test:server  # API tests (mocked Groq provider)
-npm run format:check
+The portfolio runs without an API key. The guide uses local answers until Groq is configured.
+
+## Connect the AI guide
+
+Create a `.env` file beside `package.json` and add your key:
+
+```dotenv
+GROQ_API_KEY=your_actual_key_here
 ```
 
-Browser tests use the installed Chromium at `/usr/bin/chromium` when available. Otherwise run `npx playwright install chromium`, or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to your browser executable.
+Restart the dev server after saving the file. AI replies are labeled **GROQ AI**. If the service is unavailable or a limit is reached, the guide switches to answers labeled **LOCAL GUIDE**.
 
-## Features
+The default model is `openai/gpt-oss-20b`. To use another model available in your Groq account, add:
 
-- File explorer, closable tabs, arrow-key tab navigation, URL hashes, and browser history.
-- Home, about, projects, skills, learning journey, contact, and README views.
-- Smooth wheel scrolling, animated page transitions, typewriter roles, floating geometric artwork, and hover states.
-- Square cursor with an 8px center dot and synchronized tracking, theme-matched colors and interactive hover response; can be disabled in settings.
-- Wider, expandable conversation panel with readable replies, compact suggestions, and a separately fixed composer.
-- Six persisted color themes, including a light theme.
-- Searchable command palette with keyboard navigation (`Ctrl/Command + K` or `/`).
-- Interactive portfolio terminal with commands, history, file completion, and simulated directory navigation (`Ctrl/Command + backtick`).
-- Project filters, project details, and links to actual source repositories and live projects.
-- Portfolio guide with optional Groq AI, grounded in curated public profile and project information, approved source links, follow-up context, and clearly labeled local fallback answers. AI questions are sent through the server to Groq.
-- Contact form that prepares an email draft in the visitor’s mail app, with message copying as a fallback. It does not send email automatically.
-- Downloadable student profile PDF and accessible, keyboard-operated dialogs.
-- Mobile explorer and touch layouts, plus reduced-motion support.
-- Locally bundled fonts and icons; no third-party browser scripts or analytics. The optional AI backend calls Groq.
+```dotenv
+GROQ_MODEL=your_supported_model_id
+```
 
-The terminal is a portfolio simulation, not a system shell. Project cards use original illustrative interface previews rather than screenshots of the live apps. Live project availability depends on their respective hosts.
+`.env` and `.env.local` are both supported and ignored by Git. Use one of them for your local key. The key belongs on the server, so don't put it in `src/` or give it a `VITE_` prefix. `.env.example` lists the available settings without any credentials.
 
-## Personalize
+The assistant answers from the profile and project information in `src/data.ts`. It keeps a short conversation history for follow-up questions and links to my public project sources. It doesn't fetch GitHub updates live, send email, or take actions on my behalf. Questions are sent to Groq when AI is enabled; the app doesn't save conversations on the server.
 
-Edit `src/data.ts` for the profile, project descriptions, links, skills, themes, and guide answers. The contact address is published with Irfan’s approval. The form opens the visitor’s email app with an encoded draft; messages are not stored or delivered by this website. Automatic delivery would need a configured form provider or backend email service.
+If you still see the old “Local answers. No account needed.” heading, pull the latest code, restart the server, and refresh the browser. Make sure you're opening the address printed by the current server.
 
-After changing profile details, regenerate the PDF and its printable HTML source:
+## Contact
 
-```sh
+The contact page links to my [GitHub](https://github.com/codeby-irFAN) and [LinkedIn](https://www.linkedin.com/in/irfan-ahmad-55597a444), and includes a form for **irfanahmad25136@gmail.com**.
+
+The form opens a filled-in draft in the visitor's email app. They still need to review and send it there. There's also a copy-message option if no email app opens. The website doesn't deliver or store those messages itself.
+
+## Update the content
+
+My profile, project descriptions, links, skills, and local guide answers live in `src/data.ts`.
+
+After changing profile details, regenerate the printable profile and PDF:
+
+```bash
 npm run profile
 npm run build
 ```
 
-`npm run profile` uses Node's TypeScript support and Chromium to generate `public/profile.html` and `public/Irfan-Ahmad-Profile.pdf` from the same data file. The PDF contains public student, education, and project information.
+The generated files are `public/profile.html` and `public/Irfan-Ahmad-Profile.pdf`.
 
-## Enable Groq locally
+## Project structure
 
-1. Pull the latest code with `git pull origin main` and run `npm ci`.
-2. Create a file named `.env.local` in the project root (beside `package.json`). Use `.env.example` as a template and enter your actual key locally:
+```text
+api/chat.ts                Vercel API entry point
+server/chat.ts             Groq requests, validation, and request limits
+server/chat.test.ts        API tests
+src/data.ts                Profile and project content
+src/components/            Portfolio pages and interactive UI
+src/style.css              Layout, themes, and animations
+public/                    Icons and downloadable profile
+scripts/generate-profile.mjs
+                           Generates the profile HTML and PDF
+tests/portfolio.spec.ts     Browser tests
+vite.config.ts             Local frontend and API setup
+```
 
-   ```dotenv
-   GROQ_API_KEY=your_actual_key_here
-   GROQ_MODEL=openai/gpt-oss-20b
-   ```
+## Development commands
 
-3. Stop an existing dev server with Ctrl+C, then run `npm run dev` again.
-4. Open the portfolio guide and ask a question. AI replies display **GROQ AI**; when the provider cannot be reached, replies display **LOCAL GUIDE**.
+```bash
+npm run dev           # Local development server
+npm run build         # TypeScript checks and production build
+npm run preview       # Preview the build with the local API handler
+npm test              # Browser tests
+npm run test:server   # API tests
+npm run format:check  # Check formatting
+```
 
-If the guide still shows “Local answers. No account needed.”, you are viewing the older preset-only UI. Pull the latest `main`, restart the dev server from this project folder, open the address printed by that server, and hard-refresh the browser. For a hosted Vercel site, redeploy the latest commit.
+The browser tests and profile generator need Chromium. If it isn't installed, run:
 
-`.env.local` is ignored by Git. Never put the key in `src/`, chat, a committed file, or a variable beginning with `VITE_`. Only the server reads `GROQ_API_KEY`. Model availability and free quotas depend on your Groq account; the default is from Groq's official TypeScript SDK examples. Override `GROQ_MODEL` with a model your account supports if needed. Do not use an API-key value as a model name.
+```bash
+npx playwright install chromium
+```
 
-The assistant uses facts in `src/data.ts`, curated from the public GitHub profile and project READMEs. It does not browse GitHub live. It can explain the portfolio and draft an enquiry; it cannot send emails, run shell commands, or book meetings. AI answers can be mistaken. Questions and a short conversation history are sent to Groq when enabled; this app does not persist conversations on its server.
+The tools also support a system browser at `/usr/bin/chromium` or a custom `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
 
-## Deploy with Groq on Vercel
+Tests use mocked Groq responses, so they don't need a real key or use API quota. To check a live connection, ask the guide a question after configuring the key and look for the **GROQ AI** label.
 
-1. Import this GitHub repository into Vercel. Select **Vite**, build command `npm run build`, and output directory `dist`.
-2. In **Project Settings → Environment Variables**, add **GROQ_API_KEY** with the real key. Select Production and any preview environments where you want AI enabled.
-3. Optionally add **GROQ_MODEL**. Otherwise the server uses its default model.
-4. Deploy or redeploy after changing environment variables.
+## Deploy on Vercel
 
-`api/chat.ts` is the Vercel server function. `server/chat.ts` contains the shared handler; Vite serves the same endpoint during development and production preview. The server holds the key, validates requests, caps history/output, times out provider calls, and applies a best-effort limit of 12 requests per minute per IP per instance. This in-memory limit is not shared between serverless instances; add a shared limiter before relying on it for strong abuse protection. Provider quotas still apply. The AI route has no administrative or account tools.
+1. Import this repository into Vercel.
+2. Choose **Vite**, with `npm run build` as the build command and `dist` as the output directory.
+3. Add `GROQ_API_KEY` in **Project Settings → Environment Variables**. Add `GROQ_MODEL` only if you want to override the default.
+4. Deploy. Redeploy after changing environment variables.
 
-Pure static hosting can serve `dist`, but cannot run the Groq backend. It will use local guide answers unless you provide a compatible same-origin `/api/chat` endpoint. No route rewrite is required for the hash-based page navigation. This repository does not deploy automatically.
+Vercel runs `api/chat.ts` as a server function. Locally, Vite serves the same `/api/chat` endpoint. A purely static host can serve the portfolio, but needs a compatible backend for AI replies; otherwise the guide uses its local answers.
 
-## Validation
+The API validates incoming messages, limits conversation length and output, and times out requests to Groq. It also has an in-memory limit of 12 requests per minute per IP per instance. That limit isn't shared between serverless instances, and Groq's own model availability and quotas still apply.
 
-`npm run build`, `npm run test:server`, `npm test`, and `npm run format:check` cover the build, API validation, credential isolation, provider failures, rate limits, browser UI, AI response labels, follow-up context, and fallback behavior. Tests mock Groq and never require or spend a real API key. A passing mocked suite does not establish that your live key, model, quota, or hosting configuration works; verify a labeled AI reply after setting your key.
+## Fonts and icons
 
-## Inspiration and attribution
-
-The editor interaction concept was informed by [Mohit Kuril's portfolio](https://mohitkuril.xyz/) and inspection of his [public repository](https://github.com/Mohitkuril/software-developer-portfolio). The square cursor was requested with [Aahana Bobade's portfolio](https://www.aahanabobade.com/) as inspiration. The reference sites themselves could not be loaded under the cloud environment's network policy, so exact visual and behavioral parity has not been verified. This implementation uses original application code, styling, and artwork; it does not copy their source, assets, or identity.
-
-Fonts: DM Sans, Space Grotesk, and IBM Plex Mono, self-hosted through Fontsource under their supplied font licenses. Icons: Lucide, under the ISC license. Personal and project information belongs to Irfan Ahmad.
+Fonts: DM Sans, Space Grotesk, and IBM Plex Mono, self-hosted through Fontsource under their supplied font licenses. Icons: Lucide, under the ISC license.

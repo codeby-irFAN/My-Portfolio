@@ -583,8 +583,8 @@ export default function Pages({
       </h1>
       <p className="lead">Welcome to my corner of the internet.</p>
       <p>
-        This is an interactive portfolio for {profile.name}. Explore it like a code editor, or
-        simply click around. You won't break anything.
+        I'm {profile.name}, and this is where I share what I'm building and learning. Open a file in
+        the explorer to look around, or use the shortcuts below.
       </p>
       <div className="readme-section">
         <h2>## A quick field guide</h2>
@@ -605,23 +605,13 @@ export default function Pages({
         </ul>
       </div>
       <div className="readme-section">
-        <h2>## The fine print</h2>
+        <h2>## About the guide</h2>
         <p>
-          Personal details and project descriptions come from my public GitHub profile and project
-          documentation. The portfolio guide uses Groq AI when connected, with local answers as a
-          fallback. AI questions are sent to Groq; answers can be mistaken. The terminal is an
-          interactive portfolio simulation; it does not run system commands.
-        </p>
-        <p>
-          Concept and interaction inspiration:{' '}
-          <a href="https://mohitkuril.xyz/" target="_blank" rel="noreferrer">
-            Mohit Kuril <ArrowUpRight size={13} />
-          </a>
-          . Square cursor inspiration:{' '}
-          <a href="https://www.aahanabobade.com/" target="_blank" rel="noreferrer">
-            Aahana Bobade <ArrowUpRight size={13} />
-          </a>
-          . Built independently for Irfan.
+          The guide answers questions about my background and projects using the information I've
+          shared here and in my project documentation. The portfolio guide uses Groq AI when
+          connected, with local answers as a fallback. AI questions are sent to Groq; answers can be
+          mistaken. The terminal is an interactive portfolio simulation; it does not run system
+          commands.
         </p>
       </div>
       <button className="primary-button" onClick={() => navigate('home')}>
