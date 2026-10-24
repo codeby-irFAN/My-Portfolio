@@ -13,6 +13,7 @@ This is my personal portfolio. I wanted it to feel like a developer's workspace,
 - A fixed monochrome logo and browser icon across all themes.
 - A command palette and an interactive portfolio terminal.
 - An expandable chat panel with an optional Groq-powered assistant.
+- A local browser editor for my content, projects, appearance, and AI personality.
 - A contact form that prepares an email draft, plus a downloadable profile PDF.
 - Portrait and landscape layouts, controls that fit smaller phone screens, and support for reduced motion.
 
@@ -61,7 +62,7 @@ GROQ_MODEL=your_supported_model_id
 
 `.env` and `.env.local` are both supported and ignored by Git. Use one of them for your local key. The key belongs on the server, so don't put it in `src/` or give it a `VITE_` prefix. `.env.example` lists the available settings without any credentials.
 
-The assistant answers from the profile and project information in `src/data.ts`. It keeps a short conversation history for follow-up questions and links to my public project sources. It doesn't fetch GitHub updates live, send email, or take actions on my behalf. Questions are sent to Groq when AI is enabled; the app doesn't save conversations on the server.
+The assistant answers from the profile, education, projects, skills, and extra answers in `content/portfolio.json`. I can change its personality, instructions, suggested questions, model, and reply length in the local editor. A `GROQ_MODEL` environment variable takes priority over the editor’s model setting. It keeps a short conversation history for follow-up questions and links to my public project sources. It doesn't fetch GitHub updates live, send email, or take actions on my behalf. Questions are sent to Groq when AI is enabled; the app doesn't save conversations on the server.
 
 If you still see the old “Local answers. No account needed.” heading, pull the latest code, restart the server, and refresh the browser. Make sure you're opening the address printed by the current server.
 
@@ -71,18 +72,37 @@ The contact page links to my [GitHub](https://github.com/codeby-irFAN) and [Link
 
 The form opens a filled-in draft in the visitor's email app. They still need to review and send it there. There's also a copy-message option if no email app opens. The website doesn't deliver or store those messages itself.
 
-## Update the content
+## Update the website
 
-My profile, project descriptions, links, skills, and local guide answers live in `src/data.ts`.
-
-After changing profile details, regenerate the printable profile and PDF:
+I use a local browser editor to make changes without editing React files:
 
 ```bash
-npm run profile
-npm run build
+git pull --ff-only
+npm ci
+npm run edit
 ```
 
-The generated files are `public/profile.html` and `public/Irfan-Ahmad-Profile.pdf`.
+Open the **Portfolio editor** address printed in the terminal. It normally uses `http://127.0.0.1:5177`. Keep the terminal open while editing. **Open preview** opens the running website beside it.
+
+The editor covers my profile, education, projects, skills, page headings and text, contact information, AI personality and instructions, offline answers, résumé, default theme, logo, browser icon, and cursor size. I can upload project screenshots or a PDF résumé, and reorder entries.
+
+**Save changes** writes to `content/portfolio.json` and refreshes the local preview. It also updates the generated profile HTML, PDF, and social preview image. In custom résumé mode, my uploaded PDF is kept as it is. Saving doesn’t publish anything or push to GitHub.
+
+After reviewing the preview:
+
+```bash
+npm run check
+git status
+git add content/portfolio.json public/
+git commit -m "Update portfolio content"
+git push origin main
+```
+
+Vercel deploys the push when automatic Git deployments are enabled. I check the deployment is **Ready** before checking the live domain.
+
+There’s no ChatGPT login or separate admin account involved. The editor binds to my computer’s loopback address and isn’t included in the deployed website. It doesn’t read or edit API keys. New layouts and features still need code changes.
+
+For the full walkthrough, field reference, uploads, placeholders, and troubleshooting, see [Updating my portfolio](docs/UPDATING.md). I can also edit `content/portfolio.json` directly and run `npm run check`.
 
 ## Project structure
 
@@ -90,12 +110,16 @@ The generated files are `public/profile.html` and `public/Irfan-Ahmad-Profile.pd
 api/chat.ts                Vercel API entry point
 server/chat.ts             Groq requests, validation, and request limits
 server/chat.test.ts        API tests
-src/data.ts                Profile and project content
+content/portfolio.json     My editable website content
+editor/                    Local browser editor and save/upload server
+src/content/model.ts       Content validation and derived profile facts
+src/data.ts                Connects the content file to the UI
 src/components/            Portfolio pages and interactive UI
 src/style.css              Layout, themes, and animations
 public/                    Icons and downloadable profile
 scripts/generate-profile.mjs
-                           Generates the profile HTML and PDF
+                           Generates profile HTML, PDF, and social preview
+docs/UPDATING.md            Content editing walkthrough
 tests/portfolio.spec.ts     Browser tests
 vite.config.ts             Local frontend and API setup
 ```
@@ -103,21 +127,24 @@ vite.config.ts             Local frontend and API setup
 ## Development commands
 
 ```bash
+npm run edit          # Local content editor + live website preview
 npm run dev           # Local development server
+npm run check         # Validate content and build for production
 npm run build         # TypeScript checks and production build
 npm run preview       # Preview the build with the local API handler
 npm test              # Browser tests
 npm run test:server   # API tests
+npm run test:content  # Content, asset generation, and editor API tests
 npm run format:check  # Check formatting
 ```
 
-The browser tests and profile generator need Chromium. If it isn't installed, run:
+The browser tests need Chromium. The editor, production build, PDF, and social image generators do not need a browser installation. If it isn't installed, run:
 
 ```bash
 npx playwright install chromium
 ```
 
-The tools also support a system browser at `/usr/bin/chromium` or a custom `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
+The browser tests also support a system browser at `/usr/bin/chromium` or a custom `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
 
 Tests use mocked Groq responses, so they don't need a real key or use API quota. To check a live connection, ask the guide a question after configuring the key and look for the **GROQ AI** label.
 
@@ -134,4 +161,4 @@ The API validates incoming messages, limits conversation length and output, and 
 
 ## Fonts and icons
 
-Fonts: DM Sans, Space Grotesk, and IBM Plex Mono, self-hosted through Fontsource under their supplied font licenses. Icons: Lucide, under the ISC license.
+Fonts: DM Sans, Space Grotesk, and IBM Plex Mono, self-hosted through Fontsource under their supplied font licenses. The PDF and social image generator use DejaVu Sans, with its license in `assets/fonts/LICENSE.txt`. Icons: Lucide, under the ISC license.

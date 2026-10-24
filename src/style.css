@@ -4673,3 +4673,103 @@ kbd {
 :root[data-short-viewport] .guide-intro {
   display: none;
 }
+.content-lines {
+  white-space: pre-line;
+}
+.sentence-case::first-letter {
+  text-transform: uppercase;
+}
+.project-auto-visual {
+  display: flex;
+  align-items: center;
+  padding: 25px;
+  background:
+    radial-gradient(ellipse at 85% 15%, rgba(var(--accent-rgb), 0.14), transparent 60%),
+    var(--surface);
+}
+.project-auto-copy {
+  min-width: 0;
+}
+.project-auto-copy > span {
+  font: 8px var(--mono);
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+.project-auto-copy strong {
+  display: block;
+  font: 28px var(--display);
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+}
+.project-auto-copy p {
+  font-size: 12px;
+  margin-top: 10px;
+  color: var(--muted);
+}
+.project-auto-copy small {
+  display: block;
+  font: 8px var(--mono);
+  color: var(--muted);
+  margin-top: 17px;
+}
+.project-auto-visual > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-location {
+  flex-wrap: wrap;
+}
+.brand-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.cursor-dot:before {
+  width: var(--cursor-dot-size, 8px);
+  height: var(--cursor-dot-size, 8px);
+  left: calc(var(--cursor-dot-size, 8px) / -2);
+  top: calc(var(--cursor-dot-size, 8px) / -2);
+}
+
+/* Content added through the editor can have more or longer labels. */
+.project-filter {
+  gap: 18px;
+  align-items: flex-start;
+}
+.project-filter > div {
+  flex-wrap: wrap;
+  min-width: 0;
+  gap: 0 24px;
+}
+.project-filter > span {
+  flex-shrink: 0;
+  padding-top: 16px;
+}
+.project-filter button {
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+.page h1,
+.project-title-row h3,
+.project-auto-copy,
+.skill-card,
+.guide-header > span {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.project-title-row svg,
+.guide-header-actions {
+  flex-shrink: 0;
+}
+.guide-header > span {
+  overflow: hidden;
+  max-height: 40px;
+}
+.page-description,
+.lead,
+.hero-description {
+  overflow-wrap: anywhere;
+}

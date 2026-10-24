@@ -11,14 +11,21 @@
     "profile": "node scripts/generate-profile.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:server": "node --test server/chat.test.ts"
+    "test:server": "node --test server/chat.test.ts",
+    "edit": "node scripts/edit.mjs",
+    "content:check": "node scripts/check-content.mjs",
+    "check": "npm run content:check && npm run build",
+    "test:content": "node --test src/content/model.test.ts editor/server.test.ts scripts/assets.test.ts"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",
     "@fontsource-variable/space-grotesk": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@pdf-lib/fontkit": "^1.1.1",
+    "@resvg/resvg-js": "^2.6.2",
     "lenis": "^1.3.21",
     "lucide-react": "^0.468.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

@@ -9,7 +9,7 @@ import {
   Sparkles,
   X,
 } from 'lucide-react'
-import { guideAnswers, profile, projects, type PageId } from '../data'
+import { findGuideAnswer, profile, projects, assistant, type PageId } from '../data'
 
 type Source = { label: string; url: string }
 type Message = {
@@ -31,7 +31,7 @@ export default function Guide({
     {
       role: 'guide',
       source: 'intro',
-      text: "Hey, curious human. I'm your guide to Irfan’s portfolio. Ask me about his projects, skills, or what he’s learning.",
+      text: assistant.welcome,
     },
   ])
   const [input, setInput] = useState('')
@@ -62,9 +62,7 @@ export default function Guide({
   async function ask(raw: string) {
     const text = raw.trim().slice(0, 500)
     if (!text || request.current) return
-    const localAnswer = guideAnswers.find((answer) =>
-      answer.terms.some((term) => new RegExp(`\\b${term}s?\\b`, 'i').test(text)),
-    )
+    const localAnswer = findGuideAnswer(text)
     const controller = new AbortController()
     request.current = controller
     setPending(true)
@@ -109,7 +107,7 @@ export default function Guide({
         ...previous,
         { role: 'guide', text: result.answer, source: 'groq', sources, page: localAnswer?.page },
       ])
-      setStatus('Groq AI · grounded in Irfan’s public portfolio.')
+      setStatus(`Groq AI · grounded in ${profile.firstName}’s public portfolio.`)
     } catch {
       if (request.current !== controller) return
       setMessages((previous) => [
@@ -120,7 +118,7 @@ export default function Guide({
           page: localAnswer?.page,
           text:
             localAnswer?.text ??
-            'I can help you explore Irfan’s projects, skills, education, and contact links. Try “What has he built?” or use the suggestions below.',
+            `I can help you explore ${profile.firstName}’s projects, skills, education, and contact links. Try the suggested questions below.`,
         },
       ])
       setStatus('AI unavailable. Showing a local portfolio answer.')
@@ -140,7 +138,7 @@ export default function Guide({
     >
       <div className="guide-header">
         <span>
-          <Sparkles size={16} /> PORTFOLIO GUIDE
+          <Sparkles size={16} /> {assistant.name.toUpperCase()}
         </span>
         <div className="guide-header-actions">
           <button
@@ -158,9 +156,9 @@ export default function Guide({
       </div>
       {!hasConversation && (
         <div className="guide-intro">
-          <div className="guide-symbol">✳</div>
-          <h2>A little help finding your way.</h2>
-          <p>Ask about Irfan’s work and studies.</p>
+          <div className="guide-symbol">{assistant.symbol}</div>
+          <h2>{assistant.heading}</h2>
+          <p>{assistant.intro}</p>
         </div>
       )}
       <div
@@ -222,11 +220,7 @@ export default function Guide({
           id="guide-suggestions"
           hidden={hasConversation && !suggestionsOpen}
         >
-          {[
-            ['What has he built?', 'Projects'],
-            ['What is he studying?', 'Education'],
-            ['How can I connect?', 'Contact'],
-          ].map(([text, label]) => (
+          {assistant.suggestions.map(({ question: text, label }) => (
             <button key={text} aria-label={text} disabled={pending} onClick={() => void ask(text)}>
               {label}
               <ArrowUp size={12} />
@@ -242,7 +236,7 @@ export default function Guide({
         >
           <input
             aria-label="Ask portfolio guide"
-            placeholder="Ask about Irfan…"
+            placeholder={assistant.placeholder}
             value={input}
             onChange={(event) => setInput(event.target.value)}
             maxLength={500}

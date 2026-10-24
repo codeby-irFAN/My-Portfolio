@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { ChevronDown, ChevronUp, X } from 'lucide-react'
-import { files, profile, type PageId } from '../data'
+import { files, profile, projects, skillGroups, type PageId } from '../data'
 
 type Line = { text: string; kind: 'output' | 'command' | 'error' }
 export default function Terminal({
@@ -51,7 +51,7 @@ export default function Terminal({
         output = files.map((f) => f.name).join('   ')
         break
       case 'pwd':
-        output = cwd.replace('~', '/home/irfan')
+        output = cwd.replace('~', `/home/${profile.handle}`)
         break
       case 'cd':
         if (['src', 'data', 'styles'].includes(arg)) {
@@ -82,11 +82,11 @@ export default function Terminal({
         break
       case 'projects':
         navigate('projects')
-        output = 'TraceRisk · Team Board'
+        output = projects.map((project) => project.name).join(' · ') || 'No projects listed yet.'
         break
       case 'skills':
         navigate('skills')
-        output = 'JavaScript · Python · C · React · HTML · CSS · Git'
+        output = skillGroups.flatMap((group) => group.items).join(' · ')
         break
       case 'contact':
         navigate('contact')
@@ -117,7 +117,7 @@ export default function Terminal({
     setLines((l) =>
       [
         ...l,
-        { text: `irfan ${cwd} $ ${raw}`, kind: 'command' as const },
+        { text: `${profile.handle} ${cwd} $ ${raw}`, kind: 'command' as const },
         ...(output
           ? [{ text: output, kind: error ? ('error' as const) : ('output' as const) }]
           : []),
@@ -164,7 +164,7 @@ export default function Terminal({
           </div>
           <form onSubmit={run} className="terminal-prompt">
             <label htmlFor="terminal-input">
-              <span>irfan</span> {cwd} <b>❯</b>
+              <span>{profile.handle}</span> {cwd} <b>❯</b>
             </label>
             <input
               id="terminal-input"
@@ -203,7 +203,9 @@ export default function Terminal({
           <div className="terminal-line">
             Portfolio loaded. Navigate with the explorer, tabs, or command palette.
           </div>
-          <div className="terminal-line">Personal information: github.com/codeby-irFAN</div>
+          <div className="terminal-line">
+            Personal information: {profile.github || profile.name}
+          </div>
         </div>
       )}
     </section>

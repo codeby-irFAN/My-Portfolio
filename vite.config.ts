@@ -1,8 +1,11 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, loadEnv, type UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { createChatHandler } from './server/chat.ts'
+import { generateAssets, readPortfolio, renderMetadata } from './scripts/assets.ts'
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
+  const content = readPortfolio()
+  await generateAssets(content)
   const env = loadEnv(mode, process.cwd(), '')
   const handler = createChatHandler(() => ({
     apiKey: process.env.GROQ_API_KEY || env.GROQ_API_KEY,
@@ -13,6 +16,9 @@ export default defineConfig(({ mode }) => {
       react(),
       {
         name: 'portfolio-chat-api',
+        transformIndexHtml(html) {
+          return html.replace('<!-- portfolio:metadata -->', renderMetadata(readPortfolio()))
+        },
         configureServer(server) {
           server.middlewares.use('/api/chat', handler)
         },
@@ -21,5 +27,5 @@ export default defineConfig(({ mode }) => {
         },
       },
     ],
-  }
+  } satisfies UserConfig
 })

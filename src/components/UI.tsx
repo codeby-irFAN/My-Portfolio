@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { X } from 'lucide-react'
+import { home } from '../data'
 
 export function Dialog({
   title,
@@ -103,7 +104,7 @@ export function Cursor({ enabled }: { enabled: boolean }) {
 }
 
 export function Typewriter() {
-  const words = ['web developer.', 'AI & ML explorer.', 'curious builder.']
+  const words = home.roles
   const [word, setWord] = useState(0)
   const [length, setLength] = useState(words[0].length)
   const [deleting, setDeleting] = useState(false)
@@ -122,7 +123,7 @@ export function Typewriter() {
   }, [word, length, deleting])
   return (
     <span className="typewriter">
-      <span className="sr-only">web developer, AI and ML explorer, curious builder</span>
+      <span className="sr-only">{words.join(', ')}</span>
       <span aria-hidden="true">
         {words[word].slice(0, length)}
         <span className="typing-caret">▌</span>

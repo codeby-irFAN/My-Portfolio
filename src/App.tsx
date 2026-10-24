@@ -33,7 +33,16 @@ import Pages from './components/Pages'
 import { Cursor, Dialog } from './components/UI'
 import Terminal from './components/Terminal'
 import Guide from './components/Guide'
-import { files, profile, projects, themes, type PageId, type Project } from './data'
+import {
+  files,
+  profile,
+  projects,
+  themes,
+  site,
+  appearance,
+  type PageId,
+  type Project,
+} from './data'
 
 const MOBILE_LAYOUT = '(max-width: 760px), (max-width: 950px) and (pointer: coarse)'
 
@@ -58,8 +67,8 @@ export default function App() {
   const [terminalExpanded, setTerminalExpanded] = useState(false)
   const [guide, setGuide] = useState(false)
   const [theme, setTheme] = useState(() => {
-    const t = stored('irfan-theme', 'fern')
-    return themes.some((x) => x.id === t) ? t : 'fern'
+    const t = stored('irfan-theme', appearance.defaultTheme)
+    return themes.some((x) => x.id === t) ? t : appearance.defaultTheme
   })
   const [cursor, setCursor] = useState(() => stored('irfan-cursor', 'true') === 'true')
   const [modal, setModal] = useState<'palette' | 'themes' | 'settings' | 'source' | 'help' | null>(
@@ -179,7 +188,11 @@ export default function App() {
     }
   }, [theme, cursor])
   useEffect(() => {
-    document.title = `${page === 'home' ? 'Irfan Ahmad' : page[0].toUpperCase() + page.slice(1) + ' — Irfan Ahmad'} | Developer & AI Explorer`
+    document.title =
+      page === 'home' ? site.title : `${page[0].toUpperCase() + page.slice(1)} — ${site.title}`
+    document.querySelector('meta[name="description"]')?.setAttribute('content', site.description)
+    document.querySelector('link[rel="icon"]')?.setAttribute('href', appearance.favicon)
+    document.documentElement.style.setProperty('--cursor-dot-size', `${appearance.cursorSize}px`)
   }, [page])
   useEffect(() => {
     const update = () => {
@@ -286,7 +299,7 @@ export default function App() {
     },
     {
       label: 'Ask the portfolio guide',
-      detail: 'Get to know Irfan',
+      detail: `Get to know ${profile.firstName}`,
       icon: <Sparkles size={16} />,
       run: toggleGuide,
     },
@@ -296,8 +309,8 @@ export default function App() {
       icon: <ArrowDownToLine size={16} />,
       run: () => {
         const a = document.createElement('a')
-        a.href = '/Irfan-Ahmad-Profile.pdf'
-        a.download = 'Irfan-Ahmad-Profile.pdf'
+        a.href = profile.resumeUrl
+        a.download = profile.resumeUrl.split('/').pop()!
         a.click()
       },
     },
@@ -316,8 +329,8 @@ export default function App() {
             label: 'Download profile',
             run: () => {
               const a = document.createElement('a')
-              a.href = '/Irfan-Ahmad-Profile.pdf'
-              a.download = 'Irfan-Ahmad-Profile.pdf'
+              a.href = profile.resumeUrl
+              a.download = profile.resumeUrl.split('/').pop()!
               a.click()
               setMenu(null)
             },
@@ -349,7 +362,7 @@ export default function App() {
       </a>
       <header className="titlebar">
         <button className="brand-button" aria-label="Go home" onClick={() => navigate('home')}>
-          <Code2 size={22} />
+          {appearance.logo ? <img src={appearance.logo} alt="" /> : <Code2 size={22} />}
         </button>
         <div className="desktop-menus">
           {['File', 'View', 'Help'].map((label) => (
@@ -389,7 +402,7 @@ export default function App() {
         </div>
         <button className="title-search" onClick={palette}>
           <Search size={13} />
-          <span>irfan-ahmad — portfolio</span>
+          <span>{profile.handle} — portfolio</span>
           <kbd>⌘ K</kbd>
         </button>
         <div className="title-actions">
@@ -441,9 +454,16 @@ export default function App() {
             </button>
           </div>
           <div>
-            <a href={profile.github} target="_blank" rel="noreferrer" aria-label="Irfan on GitHub">
-              <Github size={21} />
-            </a>
+            {profile.github && (
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${profile.firstName} on GitHub`}
+              >
+                <Github size={21} />
+              </a>
+            )}
             <button aria-label="Settings" onClick={() => setModal('settings')}>
               <Settings size={22} />
             </button>
@@ -478,7 +498,8 @@ export default function App() {
                   aria-expanded={folderOpen}
                   onClick={() => setFolderOpen((s) => !s)}
                 >
-                  {folderOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />} IRFAN-AHMAD
+                  {folderOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}{' '}
+                  {profile.name.toUpperCase().replace(/\s+/g, '-')}
                   <span>✦</span>
                 </button>
                 {folderOpen && (
@@ -504,7 +525,8 @@ export default function App() {
                 <button className="guide-invite" onClick={toggleGuide}>
                   <Sparkles size={17} />
                   <span>
-                    Ask about Irfan<small>A little help exploring.</small>
+                    Ask about {profile.firstName}
+                    <small>A little help exploring.</small>
                   </span>
                   <ArrowUpRight size={13} />
                 </button>
@@ -526,7 +548,8 @@ export default function App() {
                     <Braces size={12} /> Let's connect
                   </button>
                   <div className="sidebar-signature">
-                    ia<span>_</span>
+                    {profile.initials}
+                    <span>_</span>
                     <small>MADE OF CURIOSITY.</small>
                   </div>
                 </div>
@@ -545,7 +568,7 @@ export default function App() {
             >
               <Menu size={19} />
             </button>
-            <span>IRFAN'S PORTFOLIO</span>
+            <span>{profile.firstName.toUpperCase()}'S PORTFOLIO</span>
             <button className="icon-button" aria-label="Mobile command palette" onClick={palette}>
               <Search size={18} />
             </button>
@@ -824,18 +847,20 @@ export default function App() {
           <p className="dialog-description">The ideas, experiments, and code behind the work.</p>
           <div className="source-links">
             {[
-              { name: 'This portfolio', url: profile.github + '/My-Portfolio' },
+              { name: 'This portfolio', url: site.repository },
               ...projects.map((p) => ({ name: p.name, url: p.github })),
-            ].map((p) => (
-              <a href={p.url} key={p.name} target="_blank" rel="noreferrer">
-                <Github size={19} />
-                <span>
-                  {p.name}
-                  <small>codeby-irFAN / {p.url.split('/').pop()}</small>
-                </span>
-                <ArrowUpRight size={17} />
-              </a>
-            ))}
+            ]
+              .filter((p) => p.url)
+              .map((p) => (
+                <a href={p.url} key={p.name} target="_blank" rel="noreferrer">
+                  <Github size={19} />
+                  <span>
+                    {p.name}
+                    <small>{p.url.split('/').slice(-2).join(' / ')}</small>
+                  </span>
+                  <ArrowUpRight size={17} />
+                </a>
+              ))}
           </div>
         </Dialog>
       )}
@@ -866,22 +891,26 @@ export default function App() {
               ))}
             </ul>
             <div className="project-modal-links">
-              <a
-                className="primary-button"
-                href={selectedProject.live}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Explore live project <ArrowUpRight size={17} />
-              </a>
-              <a
-                className="outline-button"
-                href={selectedProject.github}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Github size={16} /> Source code
-              </a>
+              {selectedProject.live && (
+                <a
+                  className="primary-button"
+                  href={selectedProject.live}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Explore live project <ArrowUpRight size={17} />
+                </a>
+              )}
+              {selectedProject.github && (
+                <a
+                  className="outline-button"
+                  href={selectedProject.github}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Github size={16} /> Source code
+                </a>
+              )}
             </div>
             <small className="project-host-note">
               Hosted independently. First load may take a moment.

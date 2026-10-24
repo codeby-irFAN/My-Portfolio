@@ -14,16 +14,51 @@ import {
   Sparkles,
   TerminalSquare,
 } from 'lucide-react'
-import { profile, projects, skillGroups, type PageId, type Project } from '../data'
+import {
+  copy,
+  site,
+  profile,
+  projects,
+  skillGroups,
+  education,
+  home,
+  about,
+  journey,
+  featuredProjects,
+  projectCategories,
+  type PageId,
+  type Project,
+} from '../data'
 import { HeroArt, Typewriter } from './UI'
 import ContactForm from './ContactForm'
 
 export function ProjectVisual({ project }: { project: Project }) {
-  return project.id === 'tracerisk' ? (
+  if (project.image || !['travel', 'board'].includes(project.preview))
+    return (
+      <div className="project-visual project-auto-visual" aria-hidden="true">
+        <div className="project-auto-copy">
+          <span>{project.type}</span>
+          <strong>{project.name}</strong>
+          <p>{project.tagline}</p>
+          <small>{project.tags.join(' · ')}</small>
+        </div>
+        {project.image && (
+          <img
+            src={project.image}
+            alt=""
+            loading="lazy"
+            onError={(event) => {
+              event.currentTarget.hidden = true
+            }}
+          />
+        )}
+      </div>
+    )
+  return project.preview === 'travel' ? (
     <div className="project-visual travel-visual" aria-hidden="true">
       <div className="preview-chrome">
         <span className="tiny-logo">↗</span>
-        <b>TraceRisk</b>
+        <b>{project.name}</b>
         <span className="preview-nav">Your next journey, understood.</span>
         <i>✦</i>
       </div>
@@ -49,10 +84,10 @@ export function ProjectVisual({ project }: { project: Project }) {
     <div className="project-visual board-visual" aria-hidden="true">
       <div className="preview-chrome">
         <span className="tiny-logo purple">▦</span>
-        <b>Team Board</b>
+        <b>{project.name}</b>
         <span className="preview-nav">Workspace / Launch day</span>
         <span className="mini-avatars">
-          IA <i>+2</i>
+          {profile.initials.toUpperCase()} <i>+2</i>
         </span>
       </div>
       <div className="mini-board">
@@ -72,7 +107,7 @@ export function ProjectVisual({ project }: { project: Project }) {
               <strong>{column.task}</strong>
               <div className="task-lines" />
               <footer>
-                ↳ {i + 2} <i>IA</i>
+                ↳ {i + 2} <i>{profile.initials.toUpperCase()}</i>
               </footer>
             </div>
           </div>
@@ -129,27 +164,23 @@ export default function Pages({
       <article className="page home-page">
         <div className="page-topnote">
           <span>
-            <i className="pulse-dot" /> A WORK IN PROGRESS. JUST LIKE ME.
+            <i className="pulse-dot" /> {copy.home.topNote}
           </span>
-          <span>PORTFOLIO / 2026</span>
+          <span>PORTFOLIO / {new Date().getFullYear()}</span>
         </div>
         <section className="hero">
           <div className="hero-copy">
-            <p className="eyebrow">// hello, world. i'm</p>
+            <p className="eyebrow">{copy.home.greeting}</p>
             <h1>
-              Irfan<span className="name-dot">.</span>
+              {profile.firstName}
+              <span className="name-dot">.</span>
               <br />
-              <span className="outlined-name">Ahmad</span>
+              <span className="outlined-name">{profile.lastName}</span>
             </h1>
             <div className="hero-role">
-              A <Typewriter />
+              <Typewriter />
             </div>
-            <p className="hero-description">
-              Turning curiosity into code.
-              <br />
-              Exploring the space between <strong>the web</strong>,<br className="desktop-br" />{' '}
-              <strong>artificial intelligence</strong>, and what comes next.
-            </p>
+            <p className="hero-description content-lines">{home.intro}</p>
             <div className="hero-actions">
               <button className="primary-button" onClick={() => navigate('projects')}>
                 Explore my work <ArrowUpRight size={17} />
@@ -162,13 +193,13 @@ export default function Pages({
               <MapPin size={13} />
               {profile.location}
               <span />
-              B.Tech · AI & ML
+              {education.degree} · {education.subject}
             </div>
           </div>
           <HeroArt />
         </section>
         <div className="home-divider">
-          <span>GOOD THINGS START WITH CURIOSITY</span>
+          <span>{copy.home.divider}</span>
           <button
             className="text-button"
             onClick={() =>
@@ -185,9 +216,10 @@ export default function Pages({
         <section id="selected-work" className="selected-work">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">01 / SELECTED WORK</p>
+              <p className="eyebrow">01 / {copy.home.selectedLabel}</p>
               <h2>
-                Ideas, made real<span className="name-dot">.</span>
+                {copy.home.selectedTitle}
+                <span className="name-dot">.</span>
               </h2>
             </div>
             <button className="text-button" onClick={() => navigate('projects')}>
@@ -195,18 +227,14 @@ export default function Pages({
             </button>
           </div>
           <div className="project-grid">
-            {projects.map((p) => (
+            {featuredProjects.map((p) => (
               <ProjectCard key={p.id} project={p} onSelect={selectProject} compact />
             ))}
           </div>
         </section>
         <div className="home-note">
           <Braces size={22} />
-          <p>
-            Learning with curiosity.
-            <br />
-            <strong>Building with purpose.</strong>
-          </p>
+          <p>{profile.tagline}</p>
           <button
             className="circle-button"
             aria-label="Get in touch"
@@ -224,40 +252,36 @@ export default function Pages({
       <article className="page inner-page">
         <PageHeading
           number="02"
-          label="THE PERSON BEHIND THE CODE"
+          label={copy.about.label}
           title={
             <>
-              Curious by nature.
+              {copy.about.title}
               <br />
-              <em>Builder by choice.</em>
+              <em>{copy.about.subtitle}</em>
             </>
           }
         />
         <div className="about-grid">
           <div className="about-text">
-            <p className="lead">
-              Hi, I'm Irfan. I like figuring things out —<br />
-              and then building something with what I learn.
-            </p>
+            <p className="lead content-lines">{about.lead}</p>
             <p>{profile.bio}</p>
-            <p>
-              I'm developing my skills across programming and web development, focusing on the
-              fundamentals and putting them to use through hands-on work. Right now, that means
-              exploring full-stack development, machine learning, and intelligent applications.
-            </p>
-            <p>
-              There’s a lot I don't know yet.
-              <br />
-              <strong>That’s the exciting part.</strong>
-            </p>
+            {about.paragraphs.map((paragraph, index) => (
+              <p className="content-lines" key={index}>
+                {paragraph}
+              </p>
+            ))}
             <div className="link-row">
-              <a href={profile.github} target="_blank" rel="noreferrer">
-                <Github size={16} /> GitHub <ArrowUpRight size={13} />
-              </a>
-              <a href={profile.linkedin} target="_blank" rel="noreferrer">
-                <Linkedin size={16} /> LinkedIn <ArrowUpRight size={13} />
-              </a>
-              <a href="/Irfan-Ahmad-Profile.pdf" download>
+              {profile.github && (
+                <a href={profile.github} target="_blank" rel="noreferrer">
+                  <Github size={16} /> GitHub <ArrowUpRight size={13} />
+                </a>
+              )}
+              {profile.linkedin && (
+                <a href={profile.linkedin} target="_blank" rel="noreferrer">
+                  <Linkedin size={16} /> LinkedIn <ArrowUpRight size={13} />
+                </a>
+              )}
+              <a href={profile.resumeUrl} download>
                 <ArrowDownToLine size={16} /> Profile PDF
               </a>
             </div>
@@ -266,48 +290,36 @@ export default function Pages({
             <div className="identity-graphic">
               <span className="identity-cross">+</span>
               <span className="monogram">
-                ia<span>_</span>
+                {profile.initials}
+                <span>_</span>
               </span>
               <div className="identity-grid" />
             </div>
             <div className="identity-details">
-              <small>THE CURRENT CHAPTER</small>
-              <strong>Irfan Ahmad</strong>
-              <span>AI & ML student · Developer</span>
+              <small>{copy.about.identityCaption}</small>
+              <strong>{profile.name}</strong>
+              <span>{profile.role}</span>
               <p>
-                <MapPin size={13} /> New Delhi, India
+                <MapPin size={13} /> {profile.location}
               </p>
             </div>
             <div className="identity-bottom">
-              <span>ALWAYS A STUDENT.</span>
+              <span>{copy.about.identityFooter}</span>
               <Sparkles size={16} />
             </div>
           </div>
         </div>
         <div className="values-grid">
-          {[
-            {
-              icon: Code2,
-              title: 'Learn by building',
-              text: 'Small experiments, real problems, and one useful project at a time.',
-            },
-            {
-              icon: Sparkles,
-              title: 'Stay curious',
-              text: 'From interfaces to intelligent applications. There is always another why.',
-            },
-            {
-              icon: Globe,
-              title: 'Build in the open',
-              text: 'Share the process. Learn from others. Make the next thing a little better.',
-            },
-          ].map((v) => (
-            <div className="value-card" key={v.title}>
-              <v.icon size={23} />
-              <h3>{v.title}</h3>
-              <p>{v.text}</p>
-            </div>
-          ))}
+          {about.values.map((value, index) => {
+            const Icon = [Code2, Sparkles, Globe][index % 3]
+            return (
+              <div className="value-card" key={value.title}>
+                <Icon size={23} />
+                <h3>{value.title}</h3>
+                <p>{value.text}</p>
+              </div>
+            )
+          })}
         </div>
         <PageFooter navigate={navigate} />
       </article>
@@ -318,22 +330,22 @@ export default function Pages({
       <article className="page inner-page">
         <PageHeading
           number="03"
-          label="THINGS I'VE BEEN BUILDING"
+          label={copy.projects.label}
           title={
             <>
-              From “what if”
+              {copy.projects.title}
               <br />
-              to <em>“it works.”</em>
+              <em>{copy.projects.subtitle}</em>
             </>
           }
-          description="A few ideas I took beyond the notebook. Real projects, practical problems, and plenty of learning along the way."
+          description={copy.projects.description}
         />
         <div className="project-filter">
           <div role="group" aria-label="Filter projects">
-            {['All', 'Web', 'AI'].map((f) => (
+            {projectCategories.map((f) => (
               <button key={f} className={filter === f ? 'active' : ''} onClick={() => setFilter(f)}>
                 {f}
-                {f === 'All' && <span>02</span>}
+                {f === 'All' && <span>{String(projects.length).padStart(2, '0')}</span>}
               </button>
             ))}
           </div>
@@ -351,17 +363,19 @@ export default function Pages({
         <div className="next-project">
           <span>✳</span>
           <div>
-            <h3>The next idea is already brewing.</h3>
-            <p>Follow the experiments, commits, and occasional detours.</p>
+            <h3>{copy.projects.nextTitle}</h3>
+            <p>{copy.projects.nextDescription}</p>
           </div>
-          <a
-            className="outline-button"
-            href={profile.github + '?tab=repositories'}
-            target="_blank"
-            rel="noreferrer"
-          >
-            More on GitHub <ArrowUpRight size={16} />
-          </a>
+          {profile.github && (
+            <a
+              className="outline-button"
+              href={profile.github + '?tab=repositories'}
+              target="_blank"
+              rel="noreferrer"
+            >
+              More on GitHub <ArrowUpRight size={16} />
+            </a>
+          )}
         </div>
         <PageFooter navigate={navigate} />
       </article>
@@ -372,15 +386,15 @@ export default function Pages({
       <article className="page inner-page">
         <PageHeading
           number="04"
-          label="MY EVER-GROWING TOOLBOX"
+          label={copy.skills.label}
           title={
             <>
-              A few tools.
+              {copy.skills.title}
               <br />
-              <em>Endless possibilities.</em>
+              <em>{copy.skills.subtitle}</em>
             </>
           }
-          description="The technologies I use, the fundamentals I'm building, and the things I'm curious about next."
+          description={copy.skills.description}
         />
         <div className="skills-grid">
           {skillGroups.map((group, i) => (
@@ -402,7 +416,7 @@ export default function Pages({
                   <div key={item}>
                     <span className="skill-symbol">{['⌘', '{}', '↗', '◇', '⊞'][j % 5]}</span>
                     {item}
-                    {i === 2 ? (
+                    {group.learning ? (
                       <span className="learning-indicator" title="Currently learning">
                         ↗
                       </span>
@@ -417,7 +431,7 @@ export default function Pages({
         </div>
         <div className="code-block">
           <div>
-            <span className="code-muted">// the most useful skill of all</span>
+            <span className="code-muted">{copy.skills.codeComment}</span>
             <br />
             <span className="code-purple">while</span> (curious) {'{'}
             <br />
@@ -425,11 +439,7 @@ export default function Pages({
             <br />
             {'}'}
           </div>
-          <span className="code-block-label">
-            NO PROGRESS BARS.
-            <br />
-            ALWAYS ROOM TO GROW.
-          </span>
+          <span className="code-block-label content-lines">{copy.skills.codeFooter}</span>
         </div>
         <PageFooter navigate={navigate} />
       </article>
@@ -440,15 +450,15 @@ export default function Pages({
       <article className="page inner-page">
         <PageHeading
           number="05"
-          label="LEARNING IN PUBLIC"
+          label={copy.journey.label}
           title={
             <>
-              Just getting started.
+              {copy.journey.title}
               <br />
-              <em>Going somewhere.</em>
+              <em>{copy.journey.subtitle}</em>
             </>
           }
-          description="No inflated job titles. Just a student, a growing collection of projects, and a lot of curiosity."
+          description={journey.intro}
         />
         <div className="journey-layout">
           <div className="timeline">
@@ -456,32 +466,25 @@ export default function Pages({
               <span className="timeline-marker">
                 <GraduationCap size={19} />
               </span>
-              <div className="timeline-date">THE CURRENT CHAPTER</div>
+              <div className="timeline-date">{copy.journey.currentLabel}</div>
               <h2>
-                B.Tech · Artificial Intelligence
-                <br />& Machine Learning
+                {education.degree} · {education.subject}
               </h2>
               <p className="timeline-org">
-                University School of Automation & Robotics
+                {education.institution}
                 <br />
-                Guru Gobind Singh Indraprastha University, Delhi
+                {education.university}, {education.location}
               </p>
-              <p>
-                First-year student exploring the foundations of software, mathematics, and
-                intelligent systems. Taking concepts from the classroom into hands-on projects.
-              </p>
-              <span className="small-badge">CURRENTLY STUDYING</span>
+              <p className="sentence-case">{education.description}</p>
+              <span className="small-badge">{education.status.toUpperCase()}</span>
             </section>
             <section>
               <span className="timeline-marker">
                 <Code2 size={19} />
               </span>
-              <div className="timeline-date">LEARNING BY DOING</div>
-              <h2>From concepts to working projects</h2>
-              <p>
-                Building TraceRisk and Team Board has been a way to explore APIs, real-time data,
-                full-stack architecture, and the details that make software useful.
-              </p>
+              <div className="timeline-date">{copy.journey.projectLabel}</div>
+              <h2>{copy.journey.projectTitle}</h2>
+              <p>{journey.projectText}</p>
               <button className="text-button" onClick={() => navigate('projects')}>
                 See what I've built <ArrowRight size={16} />
               </button>
@@ -490,24 +493,15 @@ export default function Pages({
               <span className="timeline-marker">
                 <Sparkles size={19} />
               </span>
-              <div className="timeline-date">WHAT'S NEXT</div>
-              <h2>Keep the questions coming.</h2>
-              <p>
-                Next.js, data structures, machine learning, AI agents, and retrieval-augmented
-                generation. Learning the fundamentals and finding practical ways to apply them.
-              </p>
+              <div className="timeline-date">{copy.journey.nextLabel}</div>
+              <h2>{copy.journey.nextTitle}</h2>
+              <p>{journey.nextText}</p>
             </section>
           </div>
           <aside className="journey-note">
-            <span>NOTE TO SELF</span>
-            <h3>
-              You don't have to
-              <br />
-              know everything
-              <br />
-              to <em>start building.</em>
-            </h3>
-            <div>↗ ONE COMMIT AT A TIME</div>
+            <span>{copy.journey.noteLabel}</span>
+            <h3 className="content-lines">{copy.journey.noteText}</h3>
+            <div>{copy.journey.noteFooter}</div>
           </aside>
         </div>
         <PageFooter navigate={navigate} />
@@ -519,50 +513,54 @@ export default function Pages({
       <article className="page inner-page contact-page">
         <PageHeading
           number="06"
-          label="GOOD THINGS START WITH A CONVERSATION"
+          label={copy.contact.label}
           title={
             <>
-              Have an idea?
+              {copy.contact.title}
               <br />
-              <em>Let's talk.</em>
+              <em>{copy.contact.subtitle}</em>
             </>
           }
-          description="A project, a collaboration, a good question — or just a hello. I'm always happy to meet people who like building things."
+          description={copy.contact.description}
         />
         <div className="contact-grid">
-          <a className="contact-card" href={profile.linkedin} target="_blank" rel="noreferrer">
-            <Linkedin size={28} />
-            <ArrowUpRight className="contact-arrow" size={23} />
-            <small>LET'S CONNECT</small>
-            <h2>Find me on LinkedIn</h2>
-            <p>Irfan Ahmad</p>
-          </a>
-          <a className="contact-card" href={profile.github} target="_blank" rel="noreferrer">
-            <Github size={28} />
-            <ArrowUpRight className="contact-arrow" size={23} />
-            <small>FOLLOW THE JOURNEY</small>
-            <h2>Find me on GitHub</h2>
-            <p>@codeby-irFAN</p>
-          </a>
+          {profile.linkedin && (
+            <a className="contact-card" href={profile.linkedin} target="_blank" rel="noreferrer">
+              <Linkedin size={28} />
+              <ArrowUpRight className="contact-arrow" size={23} />
+              <small>LET'S CONNECT</small>
+              <h2>Find me on LinkedIn</h2>
+              <p>{profile.name}</p>
+            </a>
+          )}
+          {profile.github && (
+            <a className="contact-card" href={profile.github} target="_blank" rel="noreferrer">
+              <Github size={28} />
+              <ArrowUpRight className="contact-arrow" size={23} />
+              <small>FOLLOW THE JOURNEY</small>
+              <h2>Find me on GitHub</h2>
+              <p>@{profile.handle}</p>
+            </a>
+          )}
         </div>
         {profile.email && <ContactForm recipient={profile.email} />}
         <div className="contact-bottom">
           <div>
             <MapPin size={16} />
             <span>
-              Based in New Delhi, India
+              Based in {profile.location}
               <br />
-              <small>Usually somewhere between learning and building.</small>
+              <small>{copy.contact.locationNote}</small>
             </span>
           </div>
           <button
             className="outline-button"
             onClick={async () => {
               try {
-                await navigator.clipboard.writeText(profile.github)
-                notify('GitHub profile link copied.')
+                await navigator.clipboard.writeText(profile.github || site.url)
+                notify(profile.github ? 'GitHub profile link copied.' : 'Profile link copied.')
               } catch {
-                notify('Copy this link: ' + profile.github)
+                notify('Copy this link: ' + (profile.github || site.url))
               }
             }}
           >
@@ -577,15 +575,12 @@ export default function Pages({
     <article className="page inner-page readme-page">
       <p className="eyebrow"># README.md</p>
       <h1>
-        A portfolio with
+        {copy.readme.title}
         <br />
-        <em>a little personality.</em>
+        <em>{copy.readme.subtitle}</em>
       </h1>
-      <p className="lead">Welcome to my corner of the internet.</p>
-      <p>
-        I'm {profile.name}, and this is where I share what I'm building and learning. Open a file in
-        the explorer to look around, or use the shortcuts below.
-      </p>
+      <p className="lead">{copy.readme.lead}</p>
+      <p className="content-lines">{copy.readme.intro}</p>
       <div className="readme-section">
         <h2>## A quick field guide</h2>
         <ul>
@@ -605,14 +600,8 @@ export default function Pages({
         </ul>
       </div>
       <div className="readme-section">
-        <h2>## About the guide</h2>
-        <p>
-          The guide answers questions about my background and projects using the information I've
-          shared here and in my project documentation. The portfolio guide uses Groq AI when
-          connected, with local answers as a fallback. AI questions are sent to Groq; answers can be
-          mistaken. The terminal is an interactive portfolio simulation; it does not run system
-          commands.
-        </p>
+        <h2>## {copy.readme.guideTitle}</h2>
+        <p className="content-lines">{copy.readme.guideText}</p>
       </div>
       <button className="primary-button" onClick={() => navigate('home')}>
         Back to the beginning <ArrowRight size={17} />
@@ -646,9 +635,11 @@ function PageHeading({
 function PageFooter({ navigate }: { navigate: (p: PageId) => void }) {
   return (
     <footer className="page-footer">
-      <span>© {new Date().getFullYear()} IRFAN AHMAD</span>
+      <span>
+        © {new Date().getFullYear()} {profile.name.toUpperCase()}
+      </span>
       <button onClick={() => navigate('readme')}>
-        BUILT WITH CURIOSITY <TerminalSquare size={13} />
+        {copy.footer.signature} <TerminalSquare size={13} />
       </button>
     </footer>
   )

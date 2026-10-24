@@ -1,0 +1,228 @@
+{
+  "site": {
+    "url": "https://www.irfanahmad.xyz",
+    "repository": "https://github.com/codeby-irFAN/My-Portfolio",
+    "description": "{name} — {degree} student in {subject} at {institutionShort}, {universityShort}, {educationLocation}. Exploring web development, artificial intelligence, and open source.",
+    "title": "{name} — {role}"
+  },
+  "profile": {
+    "name": "Irfan Ahmad",
+    "handle": "codeby-irFAN",
+    "location": "New Delhi, India",
+    "role": "Developer & AI explorer",
+    "github": "https://github.com/codeby-irFAN",
+    "linkedin": "https://www.linkedin.com/in/irfan-ahmad-55597a444",
+    "email": "irfanahmad25136@gmail.com",
+    "bio": "I'm a {studyYear} {degree} student studying {subject} at {institutionShort}, {universityShort}, {educationLocation}. I enjoy building for the web and exploring how software and AI can solve practical problems.",
+    "tagline": "Learning with curiosity. Building with purpose."
+  },
+  "education": {
+    "degree": "B.Tech",
+    "subject": "Artificial Intelligence & Machine Learning",
+    "studyYear": "first-year",
+    "institution": "University School of Automation & Robotics",
+    "institutionShort": "USAR",
+    "university": "Guru Gobind Singh Indraprastha University",
+    "universityShort": "GGSIPU",
+    "location": "Delhi",
+    "status": "Currently studying",
+    "description": "{studyYear} student exploring the foundations of software, mathematics, and intelligent systems. Taking concepts from the classroom into hands-on projects."
+  },
+  "home": {
+    "roles": ["web developer.", "AI & ML explorer.", "curious builder."],
+    "intro": "Turning curiosity into code.\nExploring the space between the web, artificial intelligence, and what comes next."
+  },
+  "about": {
+    "lead": "Hi, I'm {firstName}. I like figuring things out —\nand then building something with what I learn.",
+    "paragraphs": [
+      "I'm developing my skills across programming and web development, focusing on the fundamentals and putting them to use through hands-on work. Right now, that means exploring full-stack development, machine learning, and intelligent applications.",
+      "There’s a lot I don't know yet.\nThat’s the exciting part."
+    ],
+    "values": [
+      {
+        "title": "Learn by building",
+        "text": "Small experiments, real problems, and one useful project at a time."
+      },
+      {
+        "title": "Stay curious",
+        "text": "From interfaces to intelligent applications. There is always another why."
+      },
+      {
+        "title": "Build in the open",
+        "text": "Share the process. Learn from others. Make the next thing a little better."
+      }
+    ]
+  },
+  "journey": {
+    "intro": "No inflated job titles. Just a student, a growing collection of projects, and a lot of curiosity.",
+    "projectText": "Building {projectNames} has been a way to explore APIs, real-time data, full-stack architecture, and the details that make software useful.",
+    "nextText": "{learningNames}. Learning the fundamentals and finding practical ways to apply them."
+  },
+  "projects": [
+    {
+      "id": "tracerisk",
+      "name": "TraceRisk",
+      "type": "AI + WEB",
+      "category": "AI",
+      "year": "2026",
+      "tagline": "A little clarity. A better journey.",
+      "description": "An AI-assisted travel workspace for India. Plan trips, explore disruptions, and follow source-linked insights before heading out.",
+      "detail": "Combines local news, travel advisories, weather, and route information in one workspace. Travelers can plan multi-stop trips, compare options, inspect original evidence, and share a trip briefing.",
+      "tags": ["React", "Express", "AI", "SQLite"],
+      "features": [
+        "Multi-stop trip planning",
+        "Source-linked travel insights",
+        "Weather and route information",
+        "Shareable trip briefings"
+      ],
+      "github": "https://github.com/codeby-irFAN/TraceRisk",
+      "live": "https://tracerisk.onrender.com/",
+      "preview": "travel",
+      "image": "",
+      "featured": true
+    },
+    {
+      "id": "teamboard",
+      "name": "Team Board",
+      "type": "FULL-STACK",
+      "category": "Web",
+      "year": "2026",
+      "tagline": "Less catching up. More creating.",
+      "description": "A real-time task board that keeps student teams in sync, from the first idea to the final handoff.",
+      "detail": "A collaborative workspace built with React and Supabase. Tasks stay synchronized across clients without a refresh. Version checks, editing indicators, and locks help teams handle simultaneous changes.",
+      "tags": ["React", "Supabase", "PostgreSQL", "Vite"],
+      "features": [
+        "Real-time synchronization",
+        "Drag-and-drop task management",
+        "Simultaneous-edit conflict detection",
+        "Persistent PostgreSQL storage"
+      ],
+      "github": "https://github.com/codeby-irFAN/Team_Board",
+      "live": "https://team-board-ashen.vercel.app",
+      "preview": "board",
+      "image": "",
+      "featured": true
+    }
+  ],
+  "skillGroups": [
+    {
+      "title": "The languages",
+      "subtitle": "How I talk to computers",
+      "items": ["JavaScript", "Python", "C", "HTML5", "CSS3"],
+      "learning": false
+    },
+    {
+      "title": "The toolkit",
+      "subtitle": "Turning ideas into interfaces",
+      "items": ["React", "Git", "GitHub", "API integration"],
+      "learning": false
+    },
+    {
+      "title": "The next chapter",
+      "subtitle": "Currently learning & exploring",
+      "items": ["Next.js", "NumPy & pandas", "scikit-learn", "AI agents & RAG", "Data structures"],
+      "learning": true
+    }
+  ],
+  "extraAnswers": [],
+  "resume": {
+    "mode": "generated",
+    "file": "Irfan-Ahmad-Profile.pdf"
+  },
+  "assistant": {
+    "name": "Portfolio guide",
+    "symbol": "✳",
+    "personality": "Friendly, curious, and straightforward. Use plain language and avoid exaggerated claims.",
+    "instructions": "Help visitors understand my projects, education, skills, and contact options. Keep answers grounded in the published facts.",
+    "welcome": "Hey, curious human. I'm your guide to {firstName}’s portfolio. Ask me about projects, skills, or what I’m learning.",
+    "intro": "Ask about {firstName}’s work and studies.",
+    "placeholder": "Ask about {firstName}…",
+    "maxWords": 150,
+    "temperature": 0.3,
+    "model": "",
+    "suggestions": [
+      {
+        "label": "Projects",
+        "question": "What has he built?"
+      },
+      {
+        "label": "Education",
+        "question": "What is he studying?"
+      },
+      {
+        "label": "Contact",
+        "question": "How can I connect?"
+      }
+    ],
+    "heading": "A little help finding your way."
+  },
+  "appearance": {
+    "defaultTheme": "fern",
+    "logo": "",
+    "favicon": "/favicon.svg?v=2",
+    "cursorSize": 8
+  },
+  "copy": {
+    "home": {
+      "topNote": "A WORK IN PROGRESS. JUST LIKE ME.",
+      "greeting": "// hello, world. i'm",
+      "divider": "GOOD THINGS START WITH CURIOSITY",
+      "selectedLabel": "SELECTED WORK",
+      "selectedTitle": "Ideas, made real"
+    },
+    "about": {
+      "label": "THE PERSON BEHIND THE CODE",
+      "title": "Curious by nature.",
+      "subtitle": "Builder by choice.",
+      "identityCaption": "THE CURRENT CHAPTER",
+      "identityFooter": "ALWAYS A STUDENT."
+    },
+    "projects": {
+      "label": "THINGS I'VE BEEN BUILDING",
+      "title": "From “what if”",
+      "subtitle": "to “it works.”",
+      "description": "A few ideas I took beyond the notebook. Real projects, practical problems, and plenty of learning along the way.",
+      "nextTitle": "The next idea is already brewing.",
+      "nextDescription": "Follow the experiments, commits, and occasional detours."
+    },
+    "skills": {
+      "label": "MY EVER-GROWING TOOLBOX",
+      "title": "A few tools.",
+      "subtitle": "Endless possibilities.",
+      "description": "The technologies I use, the fundamentals I'm building, and the things I'm curious about next.",
+      "codeComment": "// the most useful skill of all",
+      "codeFooter": "NO PROGRESS BARS.\nALWAYS ROOM TO GROW."
+    },
+    "journey": {
+      "label": "LEARNING IN PUBLIC",
+      "title": "Just getting started.",
+      "subtitle": "Going somewhere.",
+      "currentLabel": "THE CURRENT CHAPTER",
+      "projectLabel": "LEARNING BY DOING",
+      "projectTitle": "From concepts to working projects",
+      "nextLabel": "WHAT'S NEXT",
+      "nextTitle": "Keep the questions coming.",
+      "noteLabel": "NOTE TO SELF",
+      "noteText": "You don't have to\nknow everything\nto start building.",
+      "noteFooter": "↗ ONE COMMIT AT A TIME"
+    },
+    "contact": {
+      "label": "GOOD THINGS START WITH A CONVERSATION",
+      "title": "Have an idea?",
+      "subtitle": "Let's talk.",
+      "description": "A project, a collaboration, a good question — or just a hello. I'm always happy to meet people who like building things.",
+      "locationNote": "Usually somewhere between learning and building."
+    },
+    "readme": {
+      "title": "A portfolio with",
+      "subtitle": "a little personality.",
+      "lead": "Welcome to my corner of the internet.",
+      "intro": "I'm {name}, and this is where I share what I'm building and learning. Open a file in the explorer to look around, or use the shortcuts below.",
+      "guideTitle": "About the guide",
+      "guideText": "The guide answers questions about my background and projects using the information I've shared here and in my project documentation. The portfolio guide uses Groq AI when connected, with local answers as a fallback. AI questions are sent to Groq; answers can be mistaken. The terminal is an interactive portfolio simulation; it does not run system commands."
+    },
+    "footer": {
+      "signature": "BUILT WITH CURIOSITY"
+    }
+  }
+}

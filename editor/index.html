@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My portfolio editor</title>
+    <link rel="stylesheet" href="/editor.css" />
+    <script type="application/json" id="editor-config">
+      __EDITOR_CONFIG__
+    </script>
+    <script src="/editor.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div>
+        <span class="eyebrow">MY WORKSPACE · LOCAL ONLY</span>
+        <h1>Portfolio editor</h1>
+        <p>Your content, in your hands. Save here, preview, then push to publish.</p>
+      </div>
+      <div class="actions">
+        <a id="preview" class="button secondary" target="_blank" rel="noopener">Open preview ↗</a>
+      </div>
+    </header>
+    <div class="statusbar">
+      <span id="status" role="status" aria-live="polite">Loading your content…</span>
+      <div class="actions">
+        <button type="button" id="download" class="quiet">Download draft JSON</button
+        ><button id="save" type="submit" form="content-form">Save changes</button>
+      </div>
+    </div>
+    <div id="error" role="alert" hidden></div>
+    <div class="workspace">
+      <nav aria-label="Content sections" id="sections"></nav>
+      <main>
+        <form id="content-form"><div id="fields"></div></form>
+        <aside class="hint">
+          <strong>Automatic updates</strong>
+          <p>
+            Profile facts also update the guide, terminal, metadata, social card, and generated PDF.
+            Use placeholders such as <code>{name}</code>, <code>{firstName}</code>,
+            <code>{studyYear}</code>, <code>{institution}</code>, and <code>{projectNames}</code> in
+            your page text.
+          </p>
+          <p>
+            Personality and instructions affect Groq replies. Extra answers work without an API key.
+            Keys stay in your <code>.env</code> file or Vercel settings.
+          </p>
+          <p>
+            This editor changes content and the appearance settings listed here. New layouts,
+            animations, or functionality still need a code change.
+          </p>
+        </aside>
+      </main>
+    </div>
+  </body>
+</html>

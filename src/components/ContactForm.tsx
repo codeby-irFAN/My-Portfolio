@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { ArrowUpRight, Copy, Mail } from 'lucide-react'
 import { prepareEmail } from '../contact'
+import { profile } from '../data'
 
 export default function ContactForm({ recipient }: { recipient: string }) {
   const form = useRef<HTMLFormElement>(null)
@@ -59,7 +60,12 @@ export default function ContactForm({ recipient }: { recipient: string }) {
           {recipient}
         </a>
       </div>
-      <form ref={form} onSubmit={openDraft} className="email-form" aria-label="Email Irfan">
+      <form
+        ref={form}
+        onSubmit={openDraft}
+        className="email-form"
+        aria-label={`Email ${profile.firstName}`}
+      >
         <div className="email-fields">
           <label>
             Your name

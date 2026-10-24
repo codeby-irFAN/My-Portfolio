@@ -3,6 +3,7 @@ import { createServer } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { test } from 'node:test'
 import { createChatHandler, DEFAULT_GROQ_MODEL, portfolioSources } from './chat.ts'
+import { assistant } from '../src/data.ts'
 
 type Config = Parameters<typeof createChatHandler>[0]
 const question = { messages: [{ role: 'user', content: 'What is Irfan studying?' }] }
@@ -63,6 +64,9 @@ test('valid questions use server credentials, fixed grounding, and approved sour
         assert.equal(body.messages[0].role, 'system')
         assert.match(body.messages[0].content, /USAR/)
         assert.match(body.messages[0].content, /TraceRisk/)
+        assert.ok(body.messages[0].content.includes(assistant.personality))
+        assert.ok(body.messages[0].content.includes(assistant.instructions))
+        assert.equal(body.temperature, assistant.temperature)
         assert.equal(body.messages[1].content, question.messages[0].content)
         assert.ok(init?.signal)
         assert.ok(body.max_completion_tokens <= 700)
