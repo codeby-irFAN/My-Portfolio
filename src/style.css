@@ -2645,10 +2645,11 @@ kbd {
 .cursor-dot:before {
   content: '';
   position: absolute;
-  left: -1.5px;
-  top: -1.5px;
-  width: 3px;
-  height: 3px;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   background: #d3fca9;
 }
 .custom-cursor,

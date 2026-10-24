@@ -156,3 +156,79 @@ test('home and command dialog meet automated accessibility checks; PDF is downlo
   expect(pdf.ok()).toBe(true)
   expect((await pdf.body()).subarray(0, 5).toString()).toBe('%PDF-')
 })
+
+test('cursor dot and square stay centered on the pointer without trailing', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'Irfan. Ahmad' })).toBeVisible()
+  const positions = await page.evaluate(() => {
+    return [
+      [420, 240],
+      [1050, 630],
+      [560, 350],
+    ].map(([x, y]) => {
+      document.querySelector('main')!.dispatchEvent(
+        new PointerEvent('pointermove', {
+          bubbles: true,
+          pointerType: 'mouse',
+          clientX: x,
+          clientY: y,
+        }),
+      )
+      const ring = new DOMMatrix(
+        getComputedStyle(document.querySelector('.square-cursor')!).transform,
+      )
+      const dot = new DOMMatrix(getComputedStyle(document.querySelector('.cursor-dot')!).transform)
+      return { expected: [x, y], ring: [ring.m41, ring.m42], dot: [dot.m41, dot.m42] }
+    })
+  })
+  for (const position of positions) {
+    expect(position.ring).toEqual(position.expected)
+    expect(position.dot).toEqual(position.expected)
+  }
+  const dot = await page.locator('.cursor-dot').evaluate((el) => {
+    const style = getComputedStyle(el, '::before')
+    return {
+      width: style.width,
+      height: style.height,
+      radius: style.borderRadius,
+      left: style.left,
+      top: style.top,
+    }
+  })
+  expect(dot).toEqual({ width: '8px', height: '8px', radius: '50%', left: '-4px', top: '-4px' })
+  await page.getByRole('button', { name: 'Explore my work', exact: true }).hover()
+  await expect(page.locator('.square-cursor')).toHaveClass(/is-hovering/)
+  await page.evaluate(() => window.dispatchEvent(new Event('blur')))
+  await expect(page.locator('.square-cursor')).toHaveCSS('opacity', '0')
+  await expect(page.locator('.cursor-dot')).toHaveCSS('opacity', '0')
+})
+
+test('menus, scrolling, command actions, downloads, and contact copy work', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.goto('/')
+  await page.getByRole('button', { name: 'SCROLL TO EXPLORE', exact: true }).click()
+  await expect.poll(() => page.locator('main').evaluate((el) => el.scrollTop)).toBeGreaterThan(200)
+  await page.getByRole('button', { name: 'File', exact: true }).click()
+  const downloading = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Download profile', exact: true }).click()
+  expect((await downloading).suggestedFilename()).toBe('Irfan-Ahmad-Profile.pdf')
+  await page.getByRole('button', { name: 'View', exact: true }).click()
+  await page.getByRole('button', { name: 'Color theme…', exact: true }).click()
+  await expect(page.getByRole('dialog', { name: 'Change the atmosphere' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await page.keyboard.press('Control+k')
+  await page.getByRole('textbox', { name: 'Search files and commands' }).fill('theme')
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('dialog', { name: 'Change the atmosphere' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await page.locator('.file-row').filter({ hasText: 'contact.css' }).click()
+  await page.getByRole('button', { name: 'Copy profile link' }).click()
+  await expect(page.getByRole('status')).toContainText('GitHub profile link copied.')
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+    'https://github.com/codeby-irFAN',
+  )
+})

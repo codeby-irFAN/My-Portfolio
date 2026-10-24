@@ -60,24 +60,21 @@ export function Cursor({ enabled }: { enabled: boolean }) {
       matchMedia('(prefers-reduced-motion: reduce)').matches
     )
       return
-    let x = -100,
-      y = -100,
-      fx = -100,
-      fy = -100,
-      frame = 0
     const move = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse') return
-      x = e.clientX
-      y = e.clientY
+      const position = `translate3d(${e.clientX}px,${e.clientY}px,0)`
       document.body.classList.add('custom-cursor')
       const interactive = (e.target as HTMLElement).closest(
         'button,a,input,textarea,summary,[role="tab"]',
       )
       ring.current?.classList.toggle('is-hovering', !!interactive)
-      if (ring.current) ring.current.style.opacity = '1'
+      if (ring.current) {
+        ring.current.style.opacity = '1'
+        ring.current.style.transform = position
+      }
       if (dot.current) {
         dot.current.style.opacity = '1'
-        dot.current.style.transform = `translate3d(${x}px,${y}px,0)`
+        dot.current.style.transform = position
       }
     }
     const leave = () => {
@@ -85,18 +82,10 @@ export function Cursor({ enabled }: { enabled: boolean }) {
       if (dot.current) dot.current.style.opacity = '0'
       document.body.classList.remove('custom-cursor')
     }
-    const animate = () => {
-      fx += (x - fx) * 0.18
-      fy += (y - fy) * 0.18
-      if (ring.current) ring.current.style.transform = `translate3d(${fx}px,${fy}px,0)`
-      frame = requestAnimationFrame(animate)
-    }
-    frame = requestAnimationFrame(animate)
     window.addEventListener('pointermove', move)
     document.addEventListener('pointerleave', leave)
     window.addEventListener('blur', leave)
     return () => {
-      cancelAnimationFrame(frame)
       window.removeEventListener('pointermove', move)
       document.removeEventListener('pointerleave', leave)
       window.removeEventListener('blur', leave)

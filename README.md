@@ -27,7 +27,7 @@ Browser tests use the installed Chromium at `/usr/bin/chromium` when available. 
 - File explorer, closable tabs, arrow-key tab navigation, URL hashes, and browser history.
 - Home, about, projects, skills, learning journey, contact, and README views.
 - Smooth wheel scrolling, animated page transitions, typewriter roles, floating geometric artwork, and hover states.
-- Square cursor with eased tracking and interactive hover response; can be disabled in settings.
+- Square cursor with an 8px center dot and synchronized tracking, plus interactive hover response; can be disabled in settings.
 - Six persisted color themes, including a light theme.
 - Searchable command palette with keyboard navigation (`Ctrl/Command + K` or `/`).
 - Interactive portfolio terminal with commands, history, file completion, and simulated directory navigation (`Ctrl/Command + backtick`).
