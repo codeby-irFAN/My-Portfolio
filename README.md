@@ -6,14 +6,15 @@ This is my personal portfolio. I wanted it to feel like a developer's workspace,
 
 ## What's inside
 
-- An editor layout with a file explorer, closable tabs, and keyboard navigation.
+- An editor layout with a scrollable mobile explorer, closable tabs, and keyboard navigation.
 - Pages for my background, projects, skills, learning journey, and contact details.
 - A square cursor that follows the selected theme, smooth scrolling, and animated transitions.
 - Six color themes, including a light theme, with preferences saved in the browser.
+- A fixed monochrome logo and browser icon across all themes.
 - A command palette and an interactive portfolio terminal.
 - An expandable chat panel with an optional Groq-powered assistant.
 - A contact form that prepares an email draft, plus a downloadable profile PDF.
-- Responsive layouts and support for reduced motion.
+- Portrait and landscape layouts, controls that fit smaller phone screens, and support for reduced motion.
 
 The terminal is a way to explore the portfolio; it doesn't run commands on a computer. The project cards use illustrated previews, with links to the actual apps and source code.
 

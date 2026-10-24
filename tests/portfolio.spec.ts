@@ -270,6 +270,15 @@ test('cursor uses the selected theme color in every theme', async ({ page }) => 
     expect(colors.ring, theme).toBe(colors.expected)
     expect(colors.dot, theme).toBe(colors.expected)
     expect(colors.blend).toBe('normal')
+    await expect(page.getByRole('button', { name: 'Go home', exact: true })).toHaveCSS(
+      'color',
+      'rgb(27, 27, 27)',
+    )
+    await expect(page.getByRole('button', { name: 'Go home', exact: true })).toHaveCSS(
+      'background-color',
+      'rgb(242, 242, 242)',
+    )
+    await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg?v=2')
   }
 })
 

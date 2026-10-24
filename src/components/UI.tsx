@@ -21,7 +21,9 @@ export function Dialog({
     dialog.showModal()
     return () => {
       dialog.close()
-      previous?.focus()
+      if (previous?.isConnected && previous !== document.body && previous.getClientRects().length)
+        previous.focus()
+      else document.getElementById('main-content')?.focus()
     }
   }, [])
   return (

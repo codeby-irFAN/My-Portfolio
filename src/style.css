@@ -207,8 +207,11 @@ em {
   top: 12px;
 }
 .app-shell {
-  height: 100dvh;
-  min-height: 400px;
+  height: var(--app-height, 100dvh);
+  min-height: 0;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -3086,7 +3089,7 @@ kbd {
     padding-right: 5%;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 760px), (max-width: 950px) and (pointer: coarse) {
   .titlebar {
     height: 42px;
     padding: 0 15px;
@@ -4307,7 +4310,7 @@ kbd {
 .guide-sources a:hover {
   background: var(--panel);
 }
-@media (max-width: 760px) {
+@media (max-width: 760px), (max-width: 950px) and (pointer: coarse) {
   .guide-state {
     font-size: 10px;
     padding-left: 20px;
@@ -4444,7 +4447,7 @@ kbd {
 .guide-thinking {
   font-size: 12px;
 }
-@media (max-width: 760px) {
+@media (max-width: 760px), (max-width: 950px) and (pointer: coarse) {
   .guide-panel.is-expanded {
     width: 100%;
   }
@@ -4481,4 +4484,192 @@ kbd {
   .guide-form input {
     padding-block: 5px;
   }
+}
+
+/* Navigation keeps its own scroll areas instead of squeezing labels and controls. */
+.explorer {
+  min-height: 0;
+  overflow: hidden;
+}
+.explorer-heading {
+  flex: 0 0 48px;
+}
+.explorer-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.explorer-close {
+  display: none;
+}
+.explorer-scroll {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.explorer-scroll > * {
+  flex-shrink: 0;
+}
+.editor-tabs {
+  flex: 0 0 44px;
+  height: 44px;
+  min-height: 44px;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+}
+.editor-tab {
+  flex: 0 0 auto;
+  min-width: 160px;
+  max-width: 220px;
+}
+.editor-tab > button:first-child {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.tab-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tab-close {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  margin: 0 4px 0 0;
+  padding: 0;
+}
+.tab-close svg {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+}
+.tabs-right {
+  flex-shrink: 0;
+}
+.dialog-heading {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--bg);
+}
+@media (max-width: 760px), (max-width: 950px) and (pointer: coarse) {
+  .titlebar {
+    height: calc(42px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+  }
+  .title-search kbd {
+    display: none;
+  }
+  .title-search > span {
+    transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mobile-toolbar {
+    flex: 0 0 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+  .mobile-toolbar .icon-button,
+  .explorer-heading .icon-button {
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .explorer {
+    width: min(280px, calc(100% - 40px));
+  }
+  .explorer-close {
+    display: inline-flex;
+  }
+  .explorer-status {
+    margin: 20px 16px 14px;
+    font-size: 8px;
+    line-height: 1.6;
+    letter-spacing: 0.2px;
+    flex-wrap: wrap;
+  }
+  .sidebar-signature {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .editor-tabs {
+    flex-basis: 46px;
+    height: 46px;
+    min-height: 46px;
+    touch-action: pan-x;
+  }
+  .tab-close {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .breadcrumbs {
+    flex: 0 0 28px;
+    height: 28px;
+    min-height: 28px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .terminal-panel {
+    height: min(185px, calc(var(--app-height, 100dvh) * 0.35));
+    max-height: calc(100% - 150px);
+  }
+  .terminal-panel.expanded {
+    height: min(300px, calc(var(--app-height, 100dvh) * 0.5));
+    max-height: calc(100% - 150px);
+  }
+  .terminal-body {
+    font-size: 11px;
+  }
+  .terminal-prompt {
+    flex-wrap: wrap;
+  }
+  .terminal-prompt label {
+    font-size: 10px;
+  }
+  .terminal-prompt input {
+    font-size: 16px;
+    min-width: 100px;
+  }
+  .dialog,
+  .command-dialog {
+    max-height: calc(var(--app-height, 100dvh) * 0.84);
+    margin-top: calc(var(--app-height, 100dvh) * 0.08);
+    margin-bottom: 0;
+  }
+  .command-results {
+    max-height: calc(var(--app-height, 100dvh) * 0.45);
+  }
+  .command-input input {
+    font-size: 16px;
+  }
+}
+
+/* A fixed monochrome identity, independent of the selected accent. */
+.brand-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  padding: 4px;
+  border: 1px solid #d0d0d0;
+  border-radius: 7px;
+  color: #1b1b1b;
+  background: #f2f2f2;
+}
+:root[data-short-viewport] .guide-intro {
+  display: none;
 }

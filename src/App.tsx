@@ -35,6 +35,8 @@ import Terminal from './components/Terminal'
 import Guide from './components/Guide'
 import { files, profile, projects, themes, type PageId, type Project } from './data'
 
+const MOBILE_LAYOUT = '(max-width: 760px), (max-width: 950px) and (pointer: coarse)'
+
 function stored(key: string, fallback: string) {
   try {
     return localStorage.getItem(key) ?? fallback
@@ -51,7 +53,7 @@ export default function App() {
   const [tabs, setTabs] = useState<PageId[]>(() =>
     Array.from(new Set<PageId>(['home', 'about', 'projects', initialPage()])),
   )
-  const [sidebar, setSidebar] = useState(true)
+  const [sidebar, setSidebar] = useState(() => !matchMedia(MOBILE_LAYOUT).matches)
   const [terminal, setTerminal] = useState(false)
   const [terminalExpanded, setTerminalExpanded] = useState(false)
   const [guide, setGuide] = useState(false)
@@ -75,6 +77,7 @@ export default function App() {
   )
   const scroll = useRef<HTMLDivElement>(null)
   const content = useRef<HTMLDivElement>(null)
+  const tabStrip = useRef<HTMLElement>(null)
   const lenis = useRef<Lenis | null>(null)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const current = files.find((f) => f.id === page)!
@@ -88,8 +91,52 @@ export default function App() {
     setTabs((t) => (t.includes(id) ? t : [...t, id]))
     setMenu(null)
     if (location.hash !== '#' + id) location.hash = id
-    if (matchMedia('(max-width: 760px)').matches) setSidebar(false)
+    if (matchMedia(MOBILE_LAYOUT).matches) setSidebar(false)
   }, [])
+  function toggleExplorer() {
+    setSidebar((open) => !open)
+    if (matchMedia(MOBILE_LAYOUT).matches) setGuide(false)
+  }
+  function toggleGuide() {
+    setGuide((open) => !open)
+    if (matchMedia(MOBILE_LAYOUT).matches) setSidebar(false)
+  }
+  useEffect(() => {
+    const viewport = window.visualViewport
+    const resize = () => {
+      // Follow the visible space when a phone keyboard opens; preserve pinch zoom.
+      if (!viewport || viewport.scale === 1) {
+        const height = viewport?.height ?? window.innerHeight
+        document.documentElement.style.setProperty('--app-height', `${height}px`)
+        document.documentElement.toggleAttribute('data-short-viewport', height < 420)
+      }
+    }
+    resize()
+    viewport?.addEventListener('resize', resize)
+    window.addEventListener('resize', resize)
+    return () => {
+      viewport?.removeEventListener('resize', resize)
+      window.removeEventListener('resize', resize)
+      document.documentElement.style.removeProperty('--app-height')
+      document.documentElement.removeAttribute('data-short-viewport')
+    }
+  }, [])
+  useEffect(() => {
+    const strip = tabStrip.current
+    if (!strip) return
+    const revealActiveTab = () => {
+      const active = strip.querySelector<HTMLElement>('.editor-tab.active')
+      if (!active) return
+      const bounds = strip.getBoundingClientRect()
+      const tab = active.getBoundingClientRect()
+      if (tab.left < bounds.left) strip.scrollLeft -= bounds.left - tab.left
+      else if (tab.right > bounds.right) strip.scrollLeft += tab.right - bounds.right
+    }
+    revealActiveTab()
+    const observer = new ResizeObserver(revealActiveTab)
+    observer.observe(strip)
+    return () => observer.disconnect()
+  }, [page, tabs.length])
   useEffect(() => {
     const media = matchMedia('(prefers-reduced-motion: reduce)')
     const update = () => setReduced(media.matches)
@@ -158,7 +205,6 @@ export default function App() {
     return () => clearInterval(timer)
   }, [])
   useEffect(() => {
-    if (matchMedia('(max-width:760px)').matches) setSidebar(false)
     const handler = (e: KeyboardEvent) => {
       const typing = (e.target as HTMLElement).matches('input,textarea,[contenteditable="true"]')
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -174,10 +220,14 @@ export default function App() {
       }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
         e.preventDefault()
-        setSidebar((s) => !s)
+        toggleExplorer()
       }
       if (e.key === 'Escape') {
         setMenu(null)
+        if (matchMedia(MOBILE_LAYOUT).matches && !document.querySelector('dialog[open]')) {
+          setSidebar(false)
+          setGuide(false)
+        }
       }
       if (e.key === '/' && !typing && !document.querySelector('dialog[open]')) {
         e.preventDefault()
@@ -207,6 +257,7 @@ export default function App() {
     setCommandIndex(0)
     setModal('palette')
     setMenu(null)
+    if (matchMedia(MOBILE_LAYOUT).matches) setSidebar(false)
   }
   const commands = [
     ...files.map((f) => ({
@@ -215,6 +266,12 @@ export default function App() {
       icon: <FileIcon id={f.id} />,
       run: () => navigate(f.id),
     })),
+    {
+      label: 'Open settings',
+      detail: 'Cursor, appearance, and keyboard shortcuts',
+      icon: <Settings size={16} />,
+      run: () => setModal('settings'),
+    },
     {
       label: 'Change color theme',
       detail: 'Personalize your workspace',
@@ -231,7 +288,7 @@ export default function App() {
       label: 'Ask the portfolio guide',
       detail: 'Get to know Irfan',
       icon: <Sparkles size={16} />,
-      run: () => setGuide((g) => !g),
+      run: toggleGuide,
     },
     {
       label: 'Download profile PDF',
@@ -268,10 +325,10 @@ export default function App() {
         ]
       : menu === 'View'
         ? [
-            { label: 'Toggle explorer', run: () => setSidebar((s) => !s) },
+            { label: 'Toggle explorer', run: toggleExplorer },
             { label: 'Toggle terminal', run: () => setTerminal((t) => !t) },
             { label: 'Color theme…', run: () => setModal('themes') },
-            { label: 'Portfolio guide', run: () => setGuide((g) => !g) },
+            { label: 'Portfolio guide', run: toggleGuide },
           ]
         : [
             { label: 'Keyboard shortcuts', run: () => setModal('help') },
@@ -340,7 +397,7 @@ export default function App() {
             className="icon-button"
             aria-label="Toggle explorer"
             aria-expanded={sidebar}
-            onClick={() => setSidebar((s) => !s)}
+            onClick={toggleExplorer}
           >
             <PanelLeft size={16} />
           </button>
@@ -365,7 +422,7 @@ export default function App() {
             <button
               className={sidebar ? 'active' : ''}
               aria-label="Explorer"
-              onClick={() => setSidebar((s) => !s)}
+              onClick={toggleExplorer}
             >
               <Files size={22} />
             </button>
@@ -378,7 +435,7 @@ export default function App() {
             <button
               className={guide ? 'active' : ''}
               aria-label="Open portfolio guide"
-              onClick={() => setGuide((g) => !g)}
+              onClick={toggleGuide}
             >
               <Sparkles size={22} />
             </button>
@@ -396,71 +453,82 @@ export default function App() {
           <>
             <button
               className="sidebar-scrim"
-              aria-label="Close explorer"
+              aria-label="Dismiss explorer"
               onClick={() => setSidebar(false)}
             />
-            <aside className="explorer">
+            <aside className="explorer" id="file-explorer" aria-label="File explorer">
               <div className="explorer-heading">
                 EXPLORER
-                <button className="icon-button" aria-label="Explorer actions" onClick={palette}>
-                  <MoreHorizontal size={18} />
-                </button>
+                <div className="explorer-header-actions">
+                  <button className="icon-button" aria-label="Explorer actions" onClick={palette}>
+                    <MoreHorizontal size={18} />
+                  </button>
+                  <button
+                    className="icon-button explorer-close"
+                    aria-label="Close explorer"
+                    onClick={() => setSidebar(false)}
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
               </div>
-              <button
-                className="folder-heading"
-                aria-expanded={folderOpen}
-                onClick={() => setFolderOpen((s) => !s)}
-              >
-                {folderOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />} IRFAN-AHMAD
-                <span>✦</span>
-              </button>
-              {folderOpen && (
-                <div className="explorer-files">
-                  <div className="folder-label">
-                    <ChevronDown size={13} />
-                    <Folder size={14} /> portfolio
+              <div className="explorer-scroll">
+                <button
+                  className="folder-heading"
+                  aria-expanded={folderOpen}
+                  onClick={() => setFolderOpen((s) => !s)}
+                >
+                  {folderOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />} IRFAN-AHMAD
+                  <span>✦</span>
+                </button>
+                {folderOpen && (
+                  <div className="explorer-files">
+                    <div className="folder-label">
+                      <ChevronDown size={13} />
+                      <Folder size={14} /> portfolio
+                    </div>
+                    {files.map((f) => (
+                      <button
+                        key={f.id}
+                        className={'file-row ' + (page === f.id ? 'selected' : '')}
+                        onClick={() => navigate(f.id)}
+                      >
+                        <span className="tree-branch" />
+                        <FileIcon id={f.id} />
+                        <span>{f.name}</span>
+                        {page === f.id && <i className="file-active-dot" />}
+                      </button>
+                    ))}
                   </div>
-                  {files.map((f) => (
-                    <button
-                      key={f.id}
-                      className={'file-row ' + (page === f.id ? 'selected' : '')}
-                      onClick={() => navigate(f.id)}
-                    >
-                      <span className="tree-branch" />
-                      <FileIcon id={f.id} />
-                      <span>{f.name}</span>
-                      {page === f.id && <i className="file-active-dot" />}
-                    </button>
-                  ))}
-                </div>
-              )}
-              <button className="guide-invite" onClick={() => setGuide((g) => !g)}>
-                <Sparkles size={17} />
-                <span>
-                  Ask about Irfan<small>A little help exploring.</small>
-                </span>
-                <ArrowUpRight size={13} />
-              </button>
-              <div className="explorer-bottom">
-                <div className="explorer-status">
-                  <span className="pulse-dot" /> LEARNING. BUILDING. REPEATING.
-                </div>
-                <div className="outline-section">
-                  <span>OUTLINE</span>
-                  <ChevronDown size={12} />
-                </div>
-                <button onClick={() => navigate('about')}>
-                  <Braces size={12} /> A little about me
+                )}
+                <button className="guide-invite" onClick={toggleGuide}>
+                  <Sparkles size={17} />
+                  <span>
+                    Ask about Irfan<small>A little help exploring.</small>
+                  </span>
+                  <ArrowUpRight size={13} />
                 </button>
-                <button onClick={() => navigate('projects')}>
-                  <Braces size={12} /> Selected work
-                </button>
-                <button onClick={() => navigate('contact')}>
-                  <Braces size={12} /> Let's connect
-                </button>
-                <div className="sidebar-signature">
-                  ia<span>_</span>
-                  <small>MADE OF CURIOSITY.</small>
+                <div className="explorer-bottom">
+                  <div className="explorer-status">
+                    <span className="pulse-dot" /> LEARNING. BUILDING. REPEATING.
+                  </div>
+                  <div className="outline-section">
+                    <span>OUTLINE</span>
+                    <ChevronDown size={12} />
+                  </div>
+                  <button onClick={() => navigate('about')}>
+                    <Braces size={12} /> A little about me
+                  </button>
+                  <button onClick={() => navigate('projects')}>
+                    <Braces size={12} /> Selected work
+                  </button>
+                  <button onClick={() => navigate('contact')}>
+                    <Braces size={12} /> Let's connect
+                  </button>
+                  <div className="sidebar-signature">
+                    ia<span>_</span>
+                    <small>MADE OF CURIOSITY.</small>
+                  </div>
                 </div>
               </div>
             </aside>
@@ -471,7 +539,9 @@ export default function App() {
             <button
               className="icon-button"
               aria-label="Open mobile explorer"
-              onClick={() => setSidebar((s) => !s)}
+              aria-expanded={sidebar}
+              aria-controls="file-explorer"
+              onClick={toggleExplorer}
             >
               <Menu size={19} />
             </button>
@@ -480,7 +550,7 @@ export default function App() {
               <Search size={18} />
             </button>
           </div>
-          <nav className="editor-tabs" aria-label="Open portfolio pages">
+          <nav className="editor-tabs" aria-label="Open portfolio pages" ref={tabStrip}>
             {tabs.map((id, index) => {
               const f = files.find((x) => x.id === id)!
               return (
@@ -512,7 +582,7 @@ export default function App() {
                     }}
                   >
                     <FileIcon id={id} />
-                    {f.name}
+                    <span className="tab-label">{f.name}</span>
                     {page === id && <span className="tab-unsaved" aria-hidden="true" />}
                   </button>
                   <button
