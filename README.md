@@ -29,6 +29,7 @@ Browser tests use the installed Chromium at `/usr/bin/chromium` when available. 
 - Home, about, projects, skills, learning journey, contact, and README views.
 - Smooth wheel scrolling, animated page transitions, typewriter roles, floating geometric artwork, and hover states.
 - Square cursor with an 8px center dot and synchronized tracking, theme-matched colors and interactive hover response; can be disabled in settings.
+- Wider, expandable conversation panel with readable replies, compact suggestions, and a separately fixed composer.
 - Six persisted color themes, including a light theme.
 - Searchable command palette with keyboard navigation (`Ctrl/Command + K` or `/`).
 - Interactive portfolio terminal with commands, history, file completion, and simulated directory navigation (`Ctrl/Command + backtick`).
@@ -66,6 +67,8 @@ npm run build
 
 3. Stop an existing dev server with Ctrl+C, then run `npm run dev` again.
 4. Open the portfolio guide and ask a question. AI replies display **GROQ AI**; when the provider cannot be reached, replies display **LOCAL GUIDE**.
+
+If the guide still shows “Local answers. No account needed.”, you are viewing the older preset-only UI. Pull the latest `main`, restart the dev server from this project folder, open the address printed by that server, and hard-refresh the browser. For a hosted Vercel site, redeploy the latest commit.
 
 `.env.local` is ignored by Git. Never put the key in `src/`, chat, a committed file, or a variable beginning with `VITE_`. Only the server reads `GROQ_API_KEY`. Model availability and free quotas depend on your Groq account; the default is from Groq's official TypeScript SDK examples. Override `GROQ_MODEL` with a model your account supports if needed. Do not use an API-key value as a model name.
 

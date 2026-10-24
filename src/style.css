@@ -2127,9 +2127,10 @@ kbd {
   outline: 0;
 }
 .guide-panel {
-  width: 300px;
+  width: 400px;
   flex-shrink: 0;
   min-width: 0;
+  min-height: 0;
   background: var(--panel);
   border-left: 1px solid var(--line);
   display: flex;
@@ -2859,7 +2860,7 @@ kbd {
     font-size: 8px;
   }
   .guide-panel {
-    width: 270px;
+    width: 360px;
   }
   .guide-panel ~ * {
     min-width: 0;
@@ -3534,7 +3535,7 @@ kbd {
   .guide-panel {
     position: absolute;
     inset: 0 0 0 auto;
-    width: min(360px, 100%);
+    width: 100%;
     box-shadow: -20px 0 80px #0005;
     z-index: 42;
   }
@@ -4314,5 +4315,170 @@ kbd {
   }
   .guide-sources a {
     font-size: 10px;
+  }
+}
+
+/* Keep the conversation readable; introductory content never competes with replies. */
+.guide-panel.is-expanded {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: min(800px, calc(100% - 53px));
+  z-index: 43;
+  box-shadow: -20px 0 80px #0005;
+}
+.guide-header {
+  height: 48px;
+  min-height: 48px;
+  flex-shrink: 0;
+}
+.guide-header > span {
+  font-size: 10px;
+}
+.guide-header-actions {
+  display: flex;
+  gap: 5px;
+}
+.guide-intro {
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+.guide-symbol {
+  float: left;
+  margin: 0 12px 0 0;
+  font-size: 30px;
+}
+.guide-intro h2 {
+  font-size: 20px;
+  line-height: 1.35;
+  margin-top: 0;
+  letter-spacing: -0.5px;
+}
+.guide-intro > p {
+  font-size: 11px;
+  margin-top: 7px;
+}
+.guide-messages {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 16px 18px;
+  overscroll-behavior: contain;
+  scroll-padding-block: 12px;
+  scrollbar-gutter: stable;
+}
+.guide-message {
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.guide-message > small {
+  font-size: 9px;
+}
+.guide-message p {
+  font-size: 14px;
+  line-height: 1.8;
+  margin-top: 9px;
+  color: var(--text);
+}
+.guide-message.you {
+  margin-left: 28px;
+}
+.guide-message .text-button {
+  font-size: 12px;
+}
+.guide-controls {
+  flex: 0 0 auto;
+  border-top: 1px solid var(--line);
+  padding-top: 9px;
+  background: var(--panel);
+}
+.guide-state {
+  padding: 0 18px 7px;
+  font-size: 10px;
+}
+.guide-suggestions {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0 18px 10px;
+}
+.guide-suggestions button {
+  flex: 1;
+  gap: 8px;
+  justify-content: center;
+  font-size: 11px;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+.guide-suggestions-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 18px 9px;
+  padding: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+.guide-suggestions-toggle:hover {
+  color: var(--accent);
+}
+.guide-form {
+  margin: 0 18px;
+}
+.guide-form input {
+  font-size: 14px;
+  padding: 8px;
+}
+.guide-form .icon-button {
+  min-width: 32px;
+  min-height: 32px;
+}
+.guide-disclaimer {
+  font-size: 7px;
+  line-height: 1.7;
+  padding: 8px 12px 10px;
+  letter-spacing: 0.4px;
+}
+.guide-sources a {
+  font-size: 10px;
+  padding: 6px 8px;
+}
+.guide-thinking {
+  font-size: 12px;
+}
+@media (max-width: 760px) {
+  .guide-panel.is-expanded {
+    width: 100%;
+  }
+  .guide-intro h2 {
+    font-size: 20px;
+  }
+  .guide-form input {
+    font-size: 16px;
+  }
+  .guide-suggestions button {
+    padding: 8px;
+  }
+}
+@media (max-height: 560px) {
+  .guide-intro {
+    padding: 10px 18px;
+  }
+  .guide-intro h2 {
+    font-size: 17px;
+  }
+  .guide-intro > p {
+    display: none;
+  }
+  .guide-controls {
+    padding-top: 6px;
+  }
+  .guide-disclaimer {
+    padding-block: 4px;
+    font-size: 6px;
+  }
+  .guide-state {
+    padding-bottom: 4px;
+  }
+  .guide-form input {
+    padding-block: 5px;
   }
 }

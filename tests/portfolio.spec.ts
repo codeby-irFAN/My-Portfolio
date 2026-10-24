@@ -391,5 +391,77 @@ test('AI failure falls back to a labeled local answer and unlocks the form', asy
   await expect(guide.getByRole('log')).toContainText('GGSIPU')
   await expect(guide.locator('.guide-message').last()).toContainText('LOCAL GUIDE')
   await expect(guide.getByRole('status')).toContainText('AI unavailable')
+  await guide.getByRole('button', { name: 'Suggested questions' }).click()
   await expect(guide.getByRole('button', { name: 'What has he built?' })).toBeEnabled()
+})
+
+test('guide gives long answers a large scrollable area and keeps the composer separate', async ({
+  page,
+}) => {
+  const answer = Array.from(
+    { length: 16 },
+    (_, index) =>
+      `Part ${index + 1}: Team Board uses Supabase to synchronize task updates between browsers. PostgreSQL persists the board while version checks help handle simultaneous edits.`,
+  ).join('\n\n')
+  await page.route('**/api/chat', (route) => route.fulfill({ json: { answer, sources: [] } }))
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 390, height: 844 },
+    { width: 390, height: 640 },
+    { width: 740, height: 420 },
+  ]) {
+    await page.setViewportSize(viewport)
+    await page.goto('/')
+    if (viewport.width > 760) {
+      await page.getByRole('button', { name: 'Open portfolio guide', exact: true }).click()
+    } else {
+      await page.getByRole('button', { name: 'Open mobile explorer' }).click()
+      await page.getByRole('button', { name: 'Ask about Irfan' }).click()
+    }
+    const guide = page.getByRole('complementary', { name: 'Portfolio guide' })
+    await guide.getByRole('button', { name: 'What has he built?' }).click()
+    await expect(guide.locator('.guide-message').last()).toContainText('Part 16:')
+    await expect(guide.locator('.guide-intro')).toHaveCount(0)
+    await expect(guide.getByRole('button', { name: 'What has he built?' })).toHaveCount(0)
+    const layout = await guide.evaluate((panel) => {
+      const log = panel.querySelector('.guide-messages')!
+      const logRect = log.getBoundingClientRect()
+      const composer = panel.querySelector('.guide-form')!.getBoundingClientRect()
+      const controls = panel.querySelector('.guide-controls')!.getBoundingClientRect()
+      const message = log.querySelector('.guide-message:last-child p')!.getBoundingClientRect()
+      return {
+        ratio: logRect.height / panel.clientHeight,
+        composerVisible:
+          composer.bottom <= panel.getBoundingClientRect().bottom && composer.top >= controls.top,
+        noOverlap: logRect.bottom <= controls.top + 1,
+        startsAtFirstLine: message.top >= logRect.top - 1,
+        horizontalFit: log.scrollWidth <= log.clientWidth + 1,
+        scrollable: log.scrollHeight > log.clientHeight,
+      }
+    })
+    expect(layout.ratio, JSON.stringify(viewport)).toBeGreaterThan(0.48)
+    expect(layout.composerVisible).toBe(true)
+    expect(layout.noOverlap).toBe(true)
+    expect(layout.startsAtFirstLine).toBe(true)
+    expect(layout.horizontalFit).toBe(true)
+    expect(layout.scrollable).toBe(true)
+    await guide.getByRole('log').evaluate((log) => {
+      log.scrollTop = log.scrollHeight
+    })
+    expect(await guide.getByRole('log').evaluate((log) => log.scrollTop > 0)).toBe(true)
+  }
+})
+
+test('guide can expand and restore without losing an answer', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Open portfolio guide', exact: true }).click()
+  const guide = page.getByRole('complementary', { name: 'Portfolio guide' })
+  const initial = (await guide.boundingBox())!.width
+  await guide.getByRole('button', { name: 'What is he studying?' }).click()
+  await expect(guide.getByRole('log')).toContainText('GGSIPU')
+  await guide.getByRole('button', { name: 'Expand portfolio guide' }).click()
+  expect((await guide.boundingBox())!.width).toBeGreaterThan(initial)
+  await expect(guide.getByRole('log')).toContainText('GGSIPU')
+  await guide.getByRole('button', { name: 'Restore guide size' }).click()
+  expect((await guide.boundingBox())!.width).toBe(initial)
 })
