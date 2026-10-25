@@ -1,0 +1,309 @@
+HOW TO EDIT AND UPDATE MY PORTFOLIO
+===================================
+
+Website: https://www.irfanahmad.xyz
+Repository: https://github.com/codeby-irFAN/My-Portfolio
+
+The editor runs on your computer. You do not need ChatGPT or an editor
+account. Saving changes locally does not publish them to the website.
+
+
+1. OPEN YOUR PROJECT FOLDER
+--------------------------
+You need Node.js 24 or newer and Git installed.
+
+On Windows:
+  - Open your existing portfolio folder in File Explorer.
+  - Click the address bar, type cmd, and press Enter.
+  - Make sure this folder contains package.json.
+
+If you do not have the project yet, run:
+
+  git clone https://github.com/codeby-irFAN/My-Portfolio.git
+  cd My-Portfolio
+
+Do not clone again if you already have a working project folder.
+
+
+2. CHECK FOR EXISTING CHANGES AND GET THE LATEST CODE
+--------------------------------------------------
+Run:
+
+  git status
+
+If it says "working tree clean", run these commands one at a time:
+
+  git pull --ff-only
+  npm ci
+
+"git pull origin main" also works when you are on the main branch.
+Using --ff-only prevents Git from creating a merge automatically.
+
+If git status lists edits you want to keep, save and commit those before
+pulling. If the pull reports conflicts or refuses to continue, resolve
+that first. Do not delete your work or force-push to get past an error.
+
+
+3. START THE LOCAL EDITOR
+------------------------
+Run:
+
+  npm run edit
+
+Keep this terminal running.
+
+Open the Portfolio editor address printed in the terminal. Normally:
+
+  http://127.0.0.1:5177
+
+Click "Open preview" in the editor to see your website in another tab.
+The preview normally uses port 5173; it can use another port if busy.
+
+If the editor port is already in use, close any older editor terminal.
+Alternatively, use another editor port in Windows Command Prompt:
+
+  set PORTFOLIO_EDITOR_PORT=5178
+  npm run edit
+
+Then use the new address printed in the terminal.
+
+
+4. CHOOSE WHAT TO EDIT
+---------------------
+PROFILE
+  Name, handle, role, location, biography, tagline, email, GitHub,
+  and LinkedIn links. These are public website details.
+
+EDUCATION
+  Degree, subject, study year, institution, university, abbreviations,
+  location, status, and description.
+
+HOME
+  The rotating phrases and main introduction.
+
+ABOUT & VALUES
+  Your opening line, about paragraphs, and value cards.
+
+PAGE HEADINGS & TEXT
+  Page titles, descriptions, labels, journey note, README introduction,
+  and footer signature.
+
+PROJECTS
+  Add, remove, or reorder projects. Edit names, IDs, categories, years,
+  descriptions, tags, features, links, images, and featured settings.
+
+  - Each ID must be unique and lowercase, using hyphens if needed:
+    my-new-project
+  - New categories appear in the filters automatically.
+  - Do not use "All" as a category; it is reserved for the filter.
+  - "Show on the home page" controls whether a project is featured.
+  - Leave a source or live link empty to hide its button.
+  - "Auto" preview works for any project.
+  - "Travel" and "Board" keep the existing illustrated previews.
+  - To use a screenshot, choose a PNG, JPEG, or WebP file under 8 MB,
+    then click "Upload image". The image overrides the illustration.
+
+SKILLS
+  Group titles, subtitles, skill lists, and currently-learning settings.
+  Use Add entry, Remove, and the arrow buttons to manage lists.
+
+JOURNEY
+  Introduction, projects paragraph, and next steps.
+
+AI PERSONALITY: EDITING THE PORTFOLIO GUIDE
+  Change the guide's name, symbol, heading, personality, instructions,
+  welcome message, question hint, suggested questions, and reply settings.
+
+  Personality example:
+    Friendly, concise, and lightly humorous. Explain technical terms simply.
+
+  Instructions example:
+    Help visitors understand my projects and learning journey. Answer from
+    my published information. Suggest a relevant project or contact page.
+
+  - Maximum reply words: 30 to 300, using a whole number.
+  - Creativity: 0 to 1. Lower is more consistent; higher is more varied.
+  - Leave the model empty to use the default Groq model.
+  - GROQ_MODEL in .env or Vercel takes priority over the editor's model.
+  - Personality changes affect Groq replies, not the exact offline replies.
+  - The guide still uses published facts. Changing its instructions does
+    not give it the ability to browse, send email, or run system commands.
+
+OFFLINE ANSWERS
+  Add matching words or phrases, answer text, and a destination page.
+  These answers work without an API key. Matching entries take priority
+  over the built-in topic answers when the local fallback is used.
+  They are also included in the facts supplied to the AI guide.
+
+RESUME
+  Generated: the PDF updates from your profile, education, projects,
+  and skills when you save or build.
+
+  Custom: choose a PDF under 8 MB, click "Upload PDF", then save.
+  The editor fills in its path and switches to custom mode.
+
+APPEARANCE
+  Default theme, logo, browser icon, and cursor square size (3-16 pixels).
+  Leave the logo image empty to keep the monochrome code logo.
+  The built-in browser icon is /favicon.svg?v=2.
+  Existing visitors keep any theme they previously selected.
+
+EASTER EGGS
+  Edit the coffee message, hiring reply, hidden note title, message,
+  and fact list. Turn off "Enable Easter eggs" to disable all four.
+
+  Triggers:
+    coffee            - Steaming ASCII coffee in the portfolio terminal.
+    sudo hire irfan   - Contact card. The name follows your profile.
+    matrix            - Ten seconds of falling code.
+    Logo five times   - Hidden note; click/tap within four seconds.
+
+  Escape, "Exit matrix", or running matrix again stops the effect.
+  Reduced-motion settings make the code and coffee steam still.
+
+SITE & SHARING
+  Website URL, portfolio repository URL, browser title, and search/social
+  description. Use complete https:// URLs for external links.
+
+
+5. SAVE AND REVIEW
+------------------
+Click "Save changes", or press Ctrl+S / Command+S in the editor.
+Wait for the "Saved locally" message.
+
+Use "Open preview" to inspect the website. It refreshes automatically
+after a save; refresh the preview tab after a moment if needed.
+
+Check:
+  - Page text, project cards, and links.
+  - Mobile layout using your browser's device preview.
+  - Contact details and email draft recipient.
+  - Profile PDF download.
+  - Guide answers and any Easter eggs you changed.
+
+Saving updates content/portfolio.json and generated public assets:
+  public/profile.html
+  public/<configured PDF path>       (in generated resume mode)
+  public/og-card.svg
+  public/og-card.png
+
+Uploaded images and PDFs are stored in public/uploads/.
+An upload is saved locally immediately, even before "Save changes".
+Removing its reference does not delete the file.
+
+The content file also feeds the terminal, guide facts, contact form,
+project counts, category filters, and generated page metadata.
+
+USEFUL PLACEHOLDERS
+  {name}, {firstName}, {lastName}, {handle}, {role}, {location}, {email},
+  {github}, {linkedin}, {tagline}, {degree}, {subject}, {studyYear},
+  {institution}, {institutionShort}, {university}, {universityShort},
+  {educationLocation}, {educationStatus}, {projectNames}, {skillNames},
+  {learningNames}
+
+Example:
+  I'm a {studyYear} student at {institutionShort}.
+
+Use these in supported biography, page-copy, introduction, journey,
+assistant, offline-answer, and Easter-egg text fields. They keep repeated
+facts in sync. Unknown placeholders produce a validation error.
+
+If saving fails:
+  - Read the error and fix the named fields.
+  - Your unsaved draft stays in the form.
+  - "Download draft JSON" saves a backup on your computer.
+  - If the file changed elsewhere, download your draft before reloading.
+    Reconcile both versions instead of overwriting newer edits.
+
+
+6. CHECK THE PRODUCTION BUILD
+----------------------------
+Open a SECOND terminal in the same project folder. Leave the editor
+running in the first terminal.
+
+Run:
+
+  npm run check
+
+Continue only if it completes successfully. This validates the content,
+checks TypeScript, regenerates assets, and builds the production site.
+It does not need an API key or a browser installation.
+
+For source-code changes, the extra automated checks are:
+
+  npm run test:content
+  npm run test:server
+  npm test
+
+Browser tests need Chromium. If necessary:
+
+  npx playwright install chromium
+
+Automated AI tests mock Groq; they do not test your live API key.
+
+
+7. PUBLISH YOUR CONTENT CHANGES
+------------------------------
+In the second terminal, run these commands one at a time:
+
+  git status
+  git diff -- content/portfolio.json
+  git add content/portfolio.json public/
+  git commit -m "Update portfolio content"
+  git push origin main
+
+Review the changes before committing. These paths include the content,
+uploads, and generated public files. If you changed source code too,
+review and add those files separately.
+
+If Git says there is nothing to commit, you may already have committed
+the changes or may not have saved anything new.
+
+If the push is rejected because GitHub has newer commits, get and
+reconcile those changes before pushing again. Do not force-push.
+
+When Vercel is connected to this repository and main is its production
+branch, the push starts a deployment automatically.
+
+Wait for "Ready" in Vercel, then open:
+
+  https://www.irfanahmad.xyz
+
+Refresh with Ctrl+Shift+R if the browser shows an older version.
+Social services and browser icons can keep cached images for a while.
+
+
+8. FINISH
+---------
+In the FIRST terminal, press Ctrl+C to stop the editor and preview.
+Saved files remain on your computer.
+
+Next time, start with git status, pull the latest code, and run
+npm run edit again. Run npm ci when getting new code that changes
+installed dependencies; it is also fine to run it each time.
+
+
+API KEY AND CONTACT FORM NOTES
+------------------------------
+Keep your Groq key in .env or .env.local for local development:
+
+  GROQ_API_KEY=your_key_here
+
+For the live website, keep it in Vercel's environment variables.
+Never paste a real key into the editor, public files, or GitHub.
+Never give it a VITE_ prefix.
+
+Restart the local server after changing .env files. Redeploy after
+changing Vercel environment variables. Ask the guide a question and look
+for "GROQ AI" to confirm a live AI response. "LOCAL GUIDE" means a local
+answer is being shown instead.
+
+The contact form prepares a draft in the visitor's email app.
+The visitor must send it there; the website does not deliver it itself.
+
+
+WHAT STILL NEEDS CODE CHANGES?
+-----------------------------
+The browser editor handles the content and appearance settings listed
+above. New layouts, animations, pages, or functionality require source
+code changes.
